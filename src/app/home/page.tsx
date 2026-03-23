@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useRef } from "react";
 import { useFeed, useNewArrivals } from "@/features/home/queries";
+import { useProducts } from "@/features/products/queries";
 import { ProductGrid } from "@/shared/components/ProductGrid";
+import { Pagination } from "@/shared/components/Pagination";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { AppImage } from "@/shared/components/AppImage";
@@ -14,8 +17,29 @@ export default function HomePage() {
   const { data: newArrivals, isLoading: naLoading } = useNewArrivals();
 
   const categories = feed?.categories?.slice(0, 6) ?? [];
+  const activeCategories = feed?.categories?.filter((c) => c.isActive) ?? [];
   const featuredProducts = feed?.products?.slice(0, 8) ?? [];
   const newArrivalProducts = newArrivals?.products?.slice(0, 4) ?? [];
+
+  // Paginated all-products feed
+  const PER_PAGE = 15;
+  const [feedPage, setFeedPage] = useState(1);
+  const allProductsSectionRef = useRef<HTMLElement>(null);
+  const [sortBy, setSortBy] = useState("newest");
+  const { data: allProducts, isLoading: allProductsLoading } = useProducts({ sortBy });
+  const totalItems = allProducts?.length ?? 0;
+  const totalPages = Math.ceil(totalItems / PER_PAGE);
+  const pagedProducts = allProducts?.slice((feedPage - 1) * PER_PAGE, feedPage * PER_PAGE);
+
+  function scrollToFeed() {
+    allProductsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleSort(value: string) {
+    setSortBy(value);
+    setFeedPage(1);
+    scrollToFeed();
+  }
 
   return (
     <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
@@ -466,8 +490,324 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Newsletter */}
+      {/* Browse by Category — responsive: scroll on mobile, grid on desktop */}
+      {activeCategories.length > 0 && (
+        <section
+          style={{
+            padding: "4rem 1.5rem",
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+            {/* Header */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
+                marginBottom: "1.75rem",
+              }}
+            >
+              <div>
+                <p
+                  style={{
+                    color: "#C9A770",
+                    fontSize: "0.65rem",
+                    letterSpacing: "0.35em",
+                    textTransform: "uppercase",
+                    marginBottom: "0.4rem",
+                  }}
+                >
+                  Browse
+                </p>
+                <h2
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                    fontWeight: 600,
+                    color: "#F0F0F0",
+                  }}
+                >
+                  Shop by Category
+                </h2>
+              </div>
+              <Link
+                href="/categories"
+                style={{
+                  color: "rgba(255,255,255,0.35)",
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                View All →
+              </Link>
+            </div>
+
+            {/* Mobile: horizontal scroll row */}
+            <div className="r-cat-scroll">
+              {activeCategories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={categoryListingHref(cat)}
+                  style={{ flexShrink: 0, width: "7rem", textDecoration: "none" }}
+                >
+                  <div
+                    style={{
+                      position: "relative",
+                      width: "100%",
+                      aspectRatio: "1 / 1",
+                      overflow: "hidden",
+                      background: "#242426",
+                      borderRadius: "0.15rem",
+                    }}
+                    className="cat-scroll-card"
+                  >
+                    {cat.imageUrl ? (
+                      <AppImage
+                        src={cat.imageUrl}
+                        alt={cat.name}
+                        fill
+                        sizes="112px"
+                        objectFit="cover"
+                        className="product-img"
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "#242426",
+                        }}
+                      >
+                        <span style={{ fontSize: "1.5rem", fontWeight: 700, color: "rgba(255,255,255,0.15)", textTransform: "uppercase" }}>
+                          {cat.name[0]}
+                        </span>
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "linear-gradient(to top, rgba(0,0,0,0.72), transparent 55%)",
+                      }}
+                    />
+                    <p
+                      style={{
+                        position: "absolute",
+                        bottom: "0.4rem",
+                        left: 0,
+                        right: 0,
+                        textAlign: "center",
+                        fontSize: "0.65rem",
+                        fontWeight: 600,
+                        color: "#fff",
+                        padding: "0 0.25rem",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {cat.name}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Desktop: square grid — 3 cols → 6 cols */}
+            <div className="r-cat-grid">
+              {activeCategories.slice(0, 6).map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={categoryListingHref(cat)}
+                  style={{ textDecoration: "none" }}
+                  className="cat-grid-item"
+                >
+                  <div
+                    style={{
+                      position: "relative",
+                      width: "100%",
+                      aspectRatio: "1 / 1",
+                      overflow: "hidden",
+                      background: "#242426",
+                      borderRadius: "0.15rem",
+                      border: "1px solid rgba(255,255,255,0.06)",
+                      transition: "border-color 0.2s",
+                    }}
+                  >
+                    {cat.imageUrl ? (
+                      <AppImage
+                        src={cat.imageUrl}
+                        alt={cat.name}
+                        fill
+                        sizes="(max-width: 1024px) 180px, 210px"
+                        objectFit="cover"
+                        className="product-img"
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <span style={{ fontSize: "2rem", fontWeight: 700, color: "rgba(255,255,255,0.15)", textTransform: "uppercase" }}>
+                          {cat.name[0]}
+                        </span>
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "linear-gradient(to top, rgba(0,0,0,0.72), transparent 55%)",
+                      }}
+                    />
+                    <p
+                      style={{
+                        position: "absolute",
+                        bottom: "0.6rem",
+                        left: 0,
+                        right: 0,
+                        textAlign: "center",
+                        fontSize: "0.72rem",
+                        fontWeight: 600,
+                        color: "#fff",
+                        padding: "0 0.5rem",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {cat.name}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* All Products — paginated */}
       <section
+        ref={allProductsSectionRef}
+        style={{
+          padding: "4rem 1.5rem",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+          {/* Header */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+              marginBottom: "2rem",
+              flexWrap: "wrap",
+              gap: "1rem",
+            }}
+          >
+            <div>
+              <p
+                style={{
+                  color: "#C9A770",
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.35em",
+                  textTransform: "uppercase",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Explore
+              </p>
+              <h2
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
+                  fontWeight: 600,
+                  color: "#F0F0F0",
+                }}
+              >
+                All Products
+              </h2>
+              {totalItems > 0 && !allProductsLoading && (
+                <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.82rem", marginTop: "0.4rem" }}>
+                  {totalItems} piece{totalItems !== 1 ? "s" : ""}
+                </p>
+              )}
+            </div>
+
+            {/* Sort + link */}
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <select
+                value={sortBy}
+                onChange={(e) => handleSort(e.target.value)}
+                style={{
+                  background: "#2C2C2E",
+                  color: "rgba(255,255,255,0.7)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  padding: "0.5rem 0.9rem",
+                  fontSize: "0.78rem",
+                  fontFamily: "'Inter', sans-serif",
+                  cursor: "pointer",
+                  outline: "none",
+                  borderRadius: "0.25rem",
+                }}
+              >
+                <option value="newest">Newest First</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+              </select>
+              <Link
+                href="/categories"
+                style={{
+                  color: "rgba(255,255,255,0.35)",
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Full Collection →
+              </Link>
+            </div>
+          </div>
+
+          {/* Grid */}
+          <ProductGrid
+            products={pagedProducts}
+            isLoading={allProductsLoading}
+            skeletonCount={PER_PAGE}
+            emptyMessage="No products found."
+          />
+
+          {/* Pagination */}
+          {!allProductsLoading && totalPages > 1 && (
+            <div style={{ marginTop: "3rem" }}>
+              <Pagination
+                currentPage={feedPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                perPage={PER_PAGE}
+                onPageChange={(p) => {
+                  setFeedPage(p);
+                  scrollToFeed();
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      {/* <section
         style={{
           padding: "4rem 1.5rem",
           borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -541,7 +881,7 @@ export default function HomePage() {
             </button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <Footer />
       <div className="r-bottom-spacer" />
