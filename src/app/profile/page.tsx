@@ -43,7 +43,7 @@ function ProfileContent() {
       >
         {user?.photoURL ? (
           <div style={{ width: "4rem", height: "4rem", borderRadius: "50%", overflow: "hidden", flexShrink: 0, position: "relative" }}>
-            <AppImage src={user.photoURL} alt={user.displayName ?? "User"} fill objectFit="cover" />
+            <AppImage src={user.photoURL} alt={user.displayName ?? "User"} fill sizes="4rem" objectFit="cover" />
           </div>
         ) : (
           <div

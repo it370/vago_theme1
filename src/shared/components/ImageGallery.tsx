@@ -28,6 +28,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
           src={thumbs[activeIndex]}
           alt={productName}
           fill
+          sizes="(max-width: 768px) 100vw, 50vw"
           objectFit="cover"
           priority
         />
@@ -61,6 +62,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
                 src={img}
                 alt={`${productName} ${i + 1}`}
                 fill
+                sizes="(max-width: 768px) 25vw, 12vw"
                 objectFit="cover"
               />
             </button>

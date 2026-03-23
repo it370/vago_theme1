@@ -42,6 +42,7 @@ export default function HomePage() {
               src={feed.offers[0].imageUrl}
               alt="Hero"
               fill
+              sizes="100vw"
               objectFit="cover"
               priority
             />
@@ -174,6 +175,7 @@ export default function HomePage() {
                       src={cat.imageUrl}
                       alt={cat.name}
                       fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       objectFit="cover"
                       className="product-img"
                     />
@@ -315,6 +317,7 @@ export default function HomePage() {
                 src={feed.offers[1].imageUrl}
                 alt={feed.offers[1].title}
                 fill
+                sizes="(max-width: 1152px) 100vw, 72rem"
                 objectFit="cover"
               />
               <div

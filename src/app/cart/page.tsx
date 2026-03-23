@@ -93,6 +93,7 @@ function CartContent() {
                         src={item.product.images[0]}
                         alt={item.product.name ?? "Product"}
                         fill
+                        sizes="6rem"
                         objectFit="cover"
                       />
                     )}
