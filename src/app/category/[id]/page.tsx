@@ -7,13 +7,16 @@ import { useProducts } from "@/features/products/queries";
 import { ProductGrid } from "@/shared/components/ProductGrid";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
+import { resolveCategoryIdForApi } from "@/shared/lib/categoryRoutes";
 
 export default function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+  const { id: segment } = use(params);
   const { data: feed } = useFeed();
-  const { data: products, isLoading } = useProducts({ categoryId: id });
+  const categories = feed?.categories;
+  const categoryIdForApi = resolveCategoryIdForApi(segment, categories);
+  const { data: products, isLoading } = useProducts({ categoryId: categoryIdForApi });
 
-  const category = feed?.categories?.find((c) => c.id === id);
+  const category = categories?.find((c) => c.id === categoryIdForApi);
 
   return (
     <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">

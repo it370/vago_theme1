@@ -7,6 +7,7 @@ import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { AppImage } from "@/shared/components/AppImage";
 import { APP_NAME } from "@/shared/constants/app";
+import { categoryListingHref } from "@/shared/lib/categoryRoutes";
 
 export default function HomePage() {
   const { data: feed, isLoading: feedLoading } = useFeed();
@@ -18,6 +19,7 @@ export default function HomePage() {
 
   return (
     <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+
       {/* Hero */}
       <section
         style={{
@@ -35,7 +37,6 @@ export default function HomePage() {
             background: "linear-gradient(135deg, #0F0F10, #1C1C1E 55%, #2C2018)",
           }}
         />
-        {/* Hero image from offers or fallback */}
         {feed?.offers?.[0]?.imageUrl && (
           <div style={{ position: "absolute", inset: 0, opacity: 0.35 }}>
             <AppImage
@@ -55,7 +56,6 @@ export default function HomePage() {
             background: "linear-gradient(to top, #1C1C1E, transparent 50%)",
           }}
         />
-
         <div
           style={{
             position: "relative",
@@ -139,102 +139,118 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Shop by Category */}
       {categories.length > 0 && (
-        <section style={{ padding: "4rem 1.5rem" }}>
-          <div
-            style={{
-              maxWidth: "72rem",
-              margin: "0 auto",
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: "1rem",
-            }}
-          >
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/category/${cat.id}`}
-                style={{
-                  position: "relative",
-                  height: "22rem",
-                  overflow: "hidden",
-                  display: "block",
-                  textDecoration: "none",
-                }}
-              >
-                <div
+        <section
+          style={{
+            padding: "4rem 1.5rem",
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+            <p
+              style={{
+                color: "#C9A770",
+                fontSize: "0.65rem",
+                letterSpacing: "0.35em",
+                textTransform: "uppercase",
+                marginBottom: "0.5rem",
+              }}
+            >
+              Shop by category
+            </p>
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                fontWeight: 600,
+                color: "#F0F0F0",
+                marginBottom: "2rem",
+              }}
+            >
+              Explore the collection
+            </h2>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                gap: "1rem",
+              }}
+            >
+              {categories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={categoryListingHref(cat)}
                   style={{
-                    position: "absolute",
-                    inset: 0,
+                    position: "relative",
+                    height: "22rem",
                     overflow: "hidden",
+                    display: "block",
+                    textDecoration: "none",
+                    zIndex: 1,
                   }}
                 >
-                  {cat.imageUrl ? (
-                    <AppImage
-                      src={cat.imageUrl}
-                      alt={cat.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      objectFit="cover"
-                      className="product-img"
-                    />
-                  ) : (
-                    <div
+                  <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+                    {cat.imageUrl ? (
+                      <AppImage
+                        src={cat.imageUrl}
+                        alt={cat.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        objectFit="cover"
+                        className="product-img"
+                      />
+                    ) : (
+                      <div style={{ width: "100%", height: "100%", background: "#242426" }} />
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "rgba(0,0,0,0.42)",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%)",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      padding: "2rem",
+                    }}
+                  >
+                    <p
                       style={{
-                        width: "100%",
-                        height: "100%",
-                        background: "#242426",
+                        color: "#C9A770",
+                        fontSize: "0.65rem",
+                        letterSpacing: "0.3em",
+                        textTransform: "uppercase",
+                        marginBottom: "0.25rem",
                       }}
-                    />
-                  )}
-                </div>
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "rgba(0,0,0,0.42)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    padding: "2rem",
-                  }}
-                >
-                  <p
-                    style={{
-                      color: "#C9A770",
-                      fontSize: "0.65rem",
-                      letterSpacing: "0.3em",
-                      textTransform: "uppercase",
-                      marginBottom: "0.25rem",
-                    }}
-                  >
-                    Category
-                  </p>
-                  <h3
-                    style={{
-                      fontFamily: "'Playfair Display', serif",
-                      fontSize: "1.5rem",
-                      color: "#fff",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {cat.name}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+                    >
+                      Category
+                    </p>
+                    <h3
+                      style={{
+                        fontFamily: "'Playfair Display', serif",
+                        fontSize: "1.5rem",
+                        color: "#fff",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {cat.name}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -467,9 +483,7 @@ export default function HomePage() {
           >
             Early access to new collections, exclusive offers, and style notes.
           </p>
-          <div
-            style={{ display: "flex", gap: "0.75rem", maxWidth: "28rem", margin: "0 auto" }}
-          >
+          <div style={{ display: "flex", gap: "0.75rem", maxWidth: "28rem", margin: "0 auto" }}>
             <input
               type="email"
               placeholder="Your email address"
@@ -507,8 +521,6 @@ export default function HomePage() {
       </section>
 
       <Footer />
-
-      {/* Mobile bottom nav spacer */}
       <div className="r-bottom-spacer" />
       <BottomNav />
     </main>
