@@ -1,29 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useOffers, useOfferProducts } from "@/features/offers/queries";
-import { ProductGrid } from "@/shared/components/ProductGrid";
+import { useOffers } from "@/features/offers/queries";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
+import { AppImage } from "@/shared/components/AppImage";
 
 export default function SalePage() {
-  const { data: offers, isLoading: offersLoading } = useOffers();
-
+  const { data: offers, isLoading } = useOffers();
   const activeOffers = offers?.filter((o) => o.isActive) ?? [];
-  const [selectedOfferId, setSelectedOfferId] = useState<string>("");
-
-  // Set first active offer as default once loaded
-  useEffect(() => {
-    if (activeOffers.length > 0 && !selectedOfferId) {
-      setSelectedOfferId(activeOffers[0].id);
-    }
-  }, [activeOffers, selectedOfferId]);
-
-  const { data: products, isLoading: productsLoading } =
-    useOfferProducts(selectedOfferId);
-
-  const selectedOffer = activeOffers.find((o) => o.id === selectedOfferId);
 
   return (
     <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
@@ -45,52 +30,8 @@ export default function SalePage() {
           <span style={{ color: "rgba(255,255,255,0.75)" }}>Sale & Offers</span>
         </nav>
 
-        {/* Offer selector tabs */}
-        {!offersLoading && activeOffers.length > 1 && (
-          <div
-            style={{
-              display: "flex",
-              gap: "0.75rem",
-              flexWrap: "wrap",
-              marginBottom: "2.5rem",
-            }}
-          >
-            {activeOffers.map((offer) => {
-              const isActive = offer.id === selectedOfferId;
-              return (
-                <button
-                  key={offer.id}
-                  onClick={() => setSelectedOfferId(offer.id)}
-                  style={{
-                    background: isActive ? "#C9A770" : "rgba(255,255,255,0.06)",
-                    color: isActive ? "#1C1C1E" : "rgba(255,255,255,0.6)",
-                    border: isActive
-                      ? "1px solid #C9A770"
-                      : "1px solid rgba(255,255,255,0.1)",
-                    padding: "0.5rem 1.1rem",
-                    fontSize: "0.72rem",
-                    fontWeight: isActive ? 600 : 400,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    cursor: "pointer",
-                    fontFamily: "'Inter', sans-serif",
-                    borderRadius: "0.25rem",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  {offer.title}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Section heading + count */}
-        <div
-          style={{
-            marginBottom: "2rem",
-          }}
-        >
+        {/* Header */}
+        <div style={{ marginBottom: "2.5rem" }}>
           <p
             style={{
               color: "#C9A770",
@@ -102,44 +43,171 @@ export default function SalePage() {
           >
             Exclusive Offers
           </p>
-          <h2
+          <h1
             style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(1.5rem, 3vw, 2rem)",
+              fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
               fontWeight: 600,
               color: "#F0F0F0",
             }}
           >
-            {selectedOffer?.title ?? "Sale & Offers"}
-          </h2>
-          {products && !productsLoading && (
-            <p
-              style={{
-                color: "rgba(255,255,255,0.3)",
-                fontSize: "0.82rem",
-                marginTop: "0.4rem",
-              }}
-            >
-              {products.length} piece{products.length !== 1 ? "s" : ""}
-            </p>
-          )}
+            Sale & Offers
+          </h1>
         </div>
 
         {/* Divider */}
-        <div
-          style={{
-            marginBottom: "2.5rem",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
-        />
+        <div style={{ marginBottom: "2.5rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }} />
 
-        {/* Products */}
-        <ProductGrid
-          products={products}
-          isLoading={productsLoading || offersLoading}
-          skeletonCount={12}
-          emptyMessage="No items in this offer at the moment. Check back soon."
-        />
+        {/* Offer cards */}
+        {isLoading ? (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "1rem",
+            }}
+          >
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                style={{
+                  height: "10rem",
+                  background: "#242426",
+                  borderRadius: "0.25rem",
+                  animation: "pulse 1.5s ease infinite",
+                }}
+              />
+            ))}
+          </div>
+        ) : activeOffers.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "5rem 0" }}>
+            <p
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "1.1rem",
+                color: "#F0F0F0",
+                marginBottom: "0.5rem",
+              }}
+            >
+              No active offers right now
+            </p>
+            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.85rem", marginBottom: "2rem" }}>
+              Check back soon for exclusive deals.
+            </p>
+            <Link
+              href="/categories"
+              style={{
+                background: "#C9A770",
+                color: "#1C1C1E",
+                fontWeight: 600,
+                fontSize: "0.75rem",
+                padding: "0.9rem 2rem",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                display: "inline-block",
+              }}
+            >
+              Browse Collection
+            </Link>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "1rem",
+            }}
+          >
+            {activeOffers.map((offer) => (
+              <Link
+                key={offer.id}
+                href={`/sale/${offer.id}`}
+                style={{
+                  position: "relative",
+                  height: "14rem",
+                  overflow: "hidden",
+                  display: "block",
+                  textDecoration: "none",
+                  borderRadius: "0.25rem",
+                }}
+              >
+                {offer.imageUrl && (
+                  <AppImage
+                    src={offer.imageUrl}
+                    alt={offer.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    objectFit="cover"
+                    className="product-img"
+                  />
+                )}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(to right, rgba(28,28,30,0.85), rgba(28,28,30,0.35) 60%, transparent)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    padding: "1.5rem",
+                  }}
+                >
+                  <p
+                    style={{
+                      color: "#C9A770",
+                      fontSize: "0.6rem",
+                      letterSpacing: "0.3em",
+                      textTransform: "uppercase",
+                      marginBottom: "0.25rem",
+                    }}
+                  >
+                    Offer
+                  </p>
+                  <h3
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: "1.2rem",
+                      color: "#fff",
+                      fontWeight: 600,
+                      marginBottom: "0.2rem",
+                    }}
+                  >
+                    {offer.title}
+                  </h3>
+                  {offer.subtitle && (
+                    <p
+                      style={{
+                        color: "rgba(255,255,255,0.5)",
+                        fontSize: "0.78rem",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {offer.subtitle}
+                    </p>
+                  )}
+                  <span
+                    style={{
+                      display: "inline-block",
+                      marginTop: "0.75rem",
+                      color: "#C9A770",
+                      fontSize: "0.68rem",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Shop Now →
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       <Footer />

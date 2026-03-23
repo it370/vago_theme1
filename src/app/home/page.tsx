@@ -320,7 +320,7 @@ export default function HomePage() {
         <section style={{ padding: "0 1.5rem 4rem" }}>
           <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
             <Link
-              href="/sale"
+              href={`/sale/${feed.offers[1].id}`}
               style={{
                 position: "relative",
                 height: "clamp(320px, 45vh, 520px)",
