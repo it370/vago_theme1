@@ -120,7 +120,7 @@ export default function HomePage() {
                 Explore Collection
               </Link>
               <Link
-                href="/categories"
+                href="/new-arrivals"
                 style={{
                   border: "1px solid rgba(255,255,255,0.25)",
                   color: "rgba(255,255,255,0.8)",
@@ -279,7 +279,7 @@ export default function HomePage() {
               </h2>
             </div>
             <Link
-              href="/categories"
+              href="/new-arrivals"
               style={{
                 color: "rgba(255,255,255,0.35)",
                 fontSize: "0.75rem",
@@ -304,7 +304,7 @@ export default function HomePage() {
         <section style={{ padding: "0 1.5rem 4rem" }}>
           <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
             <Link
-              href="/categories"
+              href="/sale"
               style={{
                 position: "relative",
                 height: "clamp(320px, 45vh, 520px)",

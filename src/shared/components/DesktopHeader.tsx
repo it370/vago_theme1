@@ -77,8 +77,8 @@ export function DesktopHeader() {
           {/* Left: nav links (hidden on mobile via .r-nav-links) */}
           <div className="r-nav-links">
             <NavLink href="/categories">Collections</NavLink>
-            <NavLink href="/categories">New Arrivals</NavLink>
-            <NavLink href="/search?q=sale">Sale</NavLink>
+            <NavLink href="/new-arrivals">New Arrivals</NavLink>
+            <NavLink href="/sale">Sale</NavLink>
           </div>
 
           {/* Center: brand — always in the true center column */}
