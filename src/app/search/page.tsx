@@ -1,0 +1,142 @@
+"use client";
+
+import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useProducts } from "@/features/products/queries";
+import { ProductGrid } from "@/shared/components/ProductGrid";
+import { Footer } from "@/shared/components/Footer";
+import { BottomNav } from "@/shared/components/BottomNav";
+import { Search } from "lucide-react";
+
+function SearchContent() {
+  const sp = useSearchParams();
+  const router = useRouter();
+  const initialQ = sp.get("q") ?? "";
+  const [inputVal, setInputVal] = useState(initialQ);
+  const [query, setQuery] = useState(initialQ);
+
+  const { data: products, isLoading } = useProducts({ search: query || undefined });
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setQuery(inputVal.trim());
+    if (inputVal.trim()) {
+      router.replace(`/search?q=${encodeURIComponent(inputVal.trim())}`);
+    }
+  }
+
+  useEffect(() => {
+    setInputVal(initialQ);
+    setQuery(initialQ);
+  }, [initialQ]);
+
+  return (
+    <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+      <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 8rem" }}>
+        {/* Search bar */}
+        <form onSubmit={handleSubmit} style={{ marginBottom: "3rem" }}>
+          <p
+            style={{
+              color: "#C9A770",
+              fontSize: "0.65rem",
+              letterSpacing: "0.35em",
+              textTransform: "uppercase",
+              marginBottom: "0.75rem",
+            }}
+          >
+            Search
+          </p>
+          <h1
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
+              fontWeight: 600,
+              marginBottom: "2rem",
+              color: "#F0F0F0",
+            }}
+          >
+            Find Your Piece
+          </h1>
+          <div style={{ display: "flex", gap: "0.75rem", maxWidth: "40rem" }}>
+            <div style={{ flex: 1, position: "relative" }}>
+              <Search
+                size={16}
+                style={{
+                  position: "absolute",
+                  left: "0.9rem",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "rgba(255,255,255,0.4)",
+                }}
+              />
+              <input
+                type="text"
+                value={inputVal}
+                onChange={(e) => setInputVal(e.target.value)}
+                placeholder="Search products…"
+                style={{
+                  width: "100%",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#fff",
+                  padding: "0.75rem 1rem 0.75rem 2.5rem",
+                  fontSize: "0.9rem",
+                  outline: "none",
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              />
+            </div>
+            <button
+              type="submit"
+              style={{
+                background: "#C9A770",
+                color: "#1C1C1E",
+                fontWeight: 600,
+                fontSize: "0.75rem",
+                padding: "0 1.5rem",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                border: "none",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                fontFamily: "'Inter', sans-serif",
+              }}
+            >
+              Search
+            </button>
+          </div>
+        </form>
+
+        {/* Results */}
+        {query && (
+          <div style={{ marginBottom: "2rem" }}>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem" }}>
+              {isLoading
+                ? "Searching…"
+                : `${products?.length ?? 0} result${products?.length !== 1 ? "s" : ""} for "${query}"`}
+            </p>
+          </div>
+        )}
+
+        <ProductGrid
+          products={products}
+          isLoading={isLoading && !!query}
+          skeletonCount={8}
+          emptyMessage={query ? `No products found for "${query}".` : "Enter a search term above."}
+        />
+      </div>
+
+      <Footer />
+      <div style={{ height: "4.5rem" }} />
+      <BottomNav />
+    </main>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense>
+      <SearchContent />
+    </Suspense>
+  );
+}

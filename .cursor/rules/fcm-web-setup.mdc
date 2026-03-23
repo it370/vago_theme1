@@ -1,0 +1,81 @@
+---
+description: FCM Web Push — correct setup pattern for foreground listeners and notification badge updates
+globs: src/lib/fcm.ts,src/shared/components/FcmProvider.tsx,public/firebase-messaging-sw.js
+alwaysApply: false
+---
+
+# FCM Web Push — Setup Patterns
+
+## Problem 1 — Foreground listener misses messages on first page load
+
+`onMessage` (Firebase foreground handler) requires an **active, controlling service worker**.
+On the very first load the SW is still installing, so `onMessage` registers against an uncontrolled page and silently drops all messages. After a page refresh the SW is already active and everything works.
+
+**Fix:** Make `subscribeForegroundMessages` async and await `serviceWorker.ready` before calling `onMessage`. Also sequence the calls in `FcmProvider` so the listener is only wired **after** `registerFcmToken()` resolves (which already awaits `serviceWorker.ready` internally).
+
+```ts
+// fcm.ts
+export async function subscribeForegroundMessages(
+  queryClient: QueryClient,
+  onNotification: (n: ForegroundNotification) => void
+): Promise<() => void> {
+  const messaging = getFirebaseMessaging();
+  if (!messaging) return () => {};
+
+  if ("serviceWorker" in navigator) {
+    await navigator.serviceWorker.ready; // ← wait for active SW
+  }
+
+  return onMessage(messaging, (payload) => { ... });
+}
+```
+
+```ts
+// FcmProvider.tsx — sequence: register first, then subscribe
+registerFcmToken().then(() => {
+  subscribeForegroundMessages(queryClient, handler).then((unsub) => { ... });
+});
+```
+
+---
+
+## Problem 2 — Notification bell badge stale until page refresh
+
+`onMessage` only fires when the tab is **visible**. When the tab is in the background the SW handles the FCM message directly, `onMessage` never fires, and `invalidateQueries` is never called — so the bell count stays stale until the user manually refreshes.
+
+**Fix:** Add a `visibilitychange` listener in `FcmProvider` that invalidates the notifications query whenever the tab becomes visible. This covers background FCM, SW-delivered notifications, and any other server-side updates.
+
+```ts
+// FcmProvider.tsx
+const handleVisibilityChange = () => {
+  if (document.visibilityState === "visible") {
+    queryClient.invalidateQueries({ queryKey: ["notifications"] });
+  }
+};
+document.addEventListener("visibilitychange", handleVisibilityChange);
+// clean up in useEffect return
+```
+
+---
+
+## Problem 3 — Token cached, backend never re-called, topic subscription lost
+
+`localStorage` caching skips the backend `/api/fcm-token` call on subsequent loads. If the backend subscribes the token to a topic (e.g. `all`) during that call, skipping it means the token is never (re-)subscribed and topic broadcasts are silently dropped.
+
+**Fix:** Use `sessionStorage` as the "synced this session" guard. `localStorage` still caches the raw token to avoid unnecessary Firebase `getToken` round-trips, but the backend is called at least once per browser session.
+
+```ts
+const cached = localStorage.getItem(CACHED_TOKEN_KEY);
+const syncedThisSession = sessionStorage.getItem(SESSION_SYNCED_KEY) === token;
+
+if (cached === token && syncedThisSession) return; // skip only if both match
+
+await ApiService.post("/api/fcm-token", { auth: true, body: { token, platform: "web" } });
+localStorage.setItem(CACHED_TOKEN_KEY, token);
+sessionStorage.setItem(SESSION_SYNCED_KEY, token);
+```
+
+Clear the session key on unregister so a fresh login always re-syncs:
+```ts
+sessionStorage.removeItem(SESSION_SYNCED_KEY);
+```
