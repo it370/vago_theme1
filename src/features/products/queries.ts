@@ -12,20 +12,22 @@ export const productKeys = {
 };
 
 export function useProducts(
-  params: { categoryId?: string; sortBy?: string; search?: string } = {}
+  params: { categoryId?: string; sortBy?: string; search?: string; enabled?: boolean } = {}
 ) {
+  const { enabled = true, ...queryParams } = params;
   const sp = new URLSearchParams();
-  if (params.categoryId) sp.set("categoryId", params.categoryId);
-  if (params.sortBy) sp.set("sortBy", params.sortBy);
-  if (params.search) sp.set("search", params.search);
+  if (queryParams.categoryId) sp.set("categoryId", queryParams.categoryId);
+  if (queryParams.sortBy) sp.set("sortBy", queryParams.sortBy);
+  if (queryParams.search) sp.set("search", queryParams.search);
   const qs = sp.toString();
 
   return useQuery({
-    queryKey: productKeys.list(params as Record<string, string>),
+    queryKey: productKeys.list(queryParams as Record<string, string>),
     queryFn: async () =>
       normalizeProducts(
         await ApiService.get<Product[]>(`/api/products${qs ? `?${qs}` : ""}`)
       ),
+    enabled,
     staleTime: 3 * 60 * 1000,
   });
 }

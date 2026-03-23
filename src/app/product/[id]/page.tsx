@@ -2,7 +2,7 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
-import { useProduct } from "@/features/products/queries";
+import { useProduct, useProducts } from "@/features/products/queries";
 import { useAddToCart } from "@/features/cart/queries";
 import { useToggleWishlist, useWishlistProductIds } from "@/features/wishlist/queries";
 import { useAuthStore } from "@/features/auth/store";
@@ -29,6 +29,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const toggleWishlist = useToggleWishlist();
   const wishlistIds = useWishlistProductIds();
   const isWishlisted = wishlistIds.includes(id);
+
+  const { data: categoryProducts, isLoading: similarLoading } = useProducts({
+    categoryId: product?.categoryId,
+    enabled: !!product?.categoryId,
+  });
+  const similarProducts = categoryProducts?.filter((p) => p.id !== id).slice(0, 8);
 
   const effectivePrice = product?.salePrice ?? product?.price ?? 0;
   const hasDiscount = !!product?.salePrice && product.salePrice < (product?.price ?? 0);
@@ -306,6 +312,48 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
       </div>
+
+      {/* Similar Products */}
+      {(similarLoading || (similarProducts && similarProducts.length > 0)) && (
+        <section
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            padding: "4rem 1.5rem",
+          }}
+        >
+          <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+            <div style={{ marginBottom: "2.5rem" }}>
+              <p
+                style={{
+                  color: "#C9A770",
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.35em",
+                  textTransform: "uppercase",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                {product.categoryName ?? "More from the collection"}
+              </p>
+              <h2
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                  fontWeight: 600,
+                  color: "#F0F0F0",
+                }}
+              >
+                You May Also Like
+              </h2>
+            </div>
+            <ProductGrid
+              products={similarProducts}
+              isLoading={similarLoading}
+              skeletonCount={4}
+              emptyMessage="No similar products found."
+            />
+          </div>
+        </section>
+      )}
 
       <Footer />
       <div className="r-bottom-spacer" />
