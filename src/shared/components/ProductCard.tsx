@@ -1,18 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import type { Product } from "@/shared/types";
 import { formatPrice } from "@/features/products/normalize";
 import { AppImage } from "./AppImage";
+import { ProductWishlistButton } from "./ProductWishlistButton";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const [hovered, setHovered] = useState(false);
-
   const displayImage = product.images?.[0] ?? "";
   const effectivePrice = product.salePrice ?? product.price;
   const hasDiscount = !!product.salePrice && product.salePrice < product.price;
@@ -22,8 +20,6 @@ export function ProductCard({ product }: ProductCardProps) {
       href={`/product/${product.id}`}
       className="product-card block"
       style={{ textDecoration: "none", color: "inherit" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       {/* Image container — 3:4 portrait */}
       <div
@@ -80,6 +76,8 @@ export function ProductCard({ product }: ProductCardProps) {
             SALE
           </div>
         )}
+
+        <ProductWishlistButton productId={product.id} />
 
         {/* Hover overlay — frosted glass bar (luxury fashion style) */}
         <div

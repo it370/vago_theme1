@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useWishlist, useToggleWishlist } from "@/features/wishlist/queries";
+import { useWishlist } from "@/features/wishlist/queries";
 import { ProductGrid } from "@/shared/components/ProductGrid";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
@@ -10,11 +10,27 @@ import { Heart } from "lucide-react";
 
 function WishlistContent() {
   const { data, isLoading } = useWishlist();
-  const toggle = useToggleWishlist();
   const products = data?.products ?? [];
 
   return (
     <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 8rem" }}>
+      {/* Breadcrumb */}
+      <nav
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          marginBottom: "2.5rem",
+          fontSize: "0.8rem",
+        }}
+      >
+        <Link href="/home" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
+          Home
+        </Link>
+        <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
+        <span style={{ color: "rgba(255,255,255,0.75)" }}>Wishlist</span>
+      </nav>
+
       <div style={{ marginBottom: "3rem" }}>
         <p style={{ color: "#C9A770", fontSize: "0.65rem", letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
           Saved Items

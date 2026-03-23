@@ -1,4 +1,4 @@
-import type { Product, CartResponse, FeedResponse } from "@/shared/types";
+import type { Product, CartResponse, FeedResponse, WishlistResponse } from "@/shared/types";
 
 export function normalizeProduct(p: Product): Product {
   return {
@@ -35,6 +35,14 @@ export function normalizeCartResponse(cart: CartResponse): CartResponse {
       totalDiscount: 0,
       subtotalPayable: 0,
     },
+  };
+}
+
+export function normalizeWishlistResponse(w: WishlistResponse): WishlistResponse {
+  return {
+    ...w,
+    productIds: w.productIds ?? [],
+    products: normalizeProducts(w.products ?? []),
   };
 }
 
