@@ -13,7 +13,7 @@ export default function HomePage() {
   const { data: feed, isLoading: feedLoading } = useFeed();
   const { data: newArrivals, isLoading: naLoading } = useNewArrivals();
 
-  const categories = feed?.categories?.slice(0, 3) ?? [];
+  const categories = feed?.categories?.slice(0, 6) ?? [];
   const featuredProducts = feed?.products?.slice(0, 8) ?? [];
   const newArrivalProducts = newArrivals?.products?.slice(0, 4) ?? [];
 
@@ -148,28 +148,51 @@ export default function HomePage() {
           }}
         >
           <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
-            <p
+            <div
               style={{
-                color: "#C9A770",
-                fontSize: "0.65rem",
-                letterSpacing: "0.35em",
-                textTransform: "uppercase",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Shop by category
-            </p>
-            <h2
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: "clamp(1.5rem, 3vw, 2rem)",
-                fontWeight: 600,
-                color: "#F0F0F0",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
                 marginBottom: "2rem",
               }}
             >
-              Explore the collection
-            </h2>
+              <div>
+                <p
+                  style={{
+                    color: "#C9A770",
+                    fontSize: "0.65rem",
+                    letterSpacing: "0.35em",
+                    textTransform: "uppercase",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Shop by category
+                </p>
+                <h2
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                    fontWeight: 600,
+                    color: "#F0F0F0",
+                  }}
+                >
+                  Explore the collection
+                </h2>
+              </div>
+              <Link
+                href="/categories"
+                style={{
+                  color: "rgba(255,255,255,0.35)",
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                View All →
+              </Link>
+            </div>
             <div
               style={{
                 display: "grid",
