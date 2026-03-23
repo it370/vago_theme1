@@ -111,16 +111,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <span style={{ color: "rgba(255,255,255,0.7)" }}>{product.name}</span>
         </nav>
 
-        {/* Layout */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "4rem",
-            marginBottom: "5rem",
-            alignItems: "start",
-          }}
-        >
+        {/* Layout — 2-col desktop / 1-col mobile */}
+        <div className="r-pdp-grid">
           {/* Images */}
           <ImageGallery images={product.images} productName={product.name} />
 
@@ -316,7 +308,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       </div>
 
       <Footer />
-      <div style={{ height: "4.5rem" }} />
+      <div className="r-bottom-spacer" />
       <BottomNav />
     </main>
   );

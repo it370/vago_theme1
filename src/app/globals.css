@@ -33,6 +33,17 @@ body {
   color: var(--foreground);
   font-family: "Inter", sans-serif;
   margin: 0;
+  /* Page reveal — starts invisible, JS adds .vago-revealed */
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(1px);
+  transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+}
+
+body.vago-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
 }
 
 /* Scrollbar */
@@ -40,13 +51,13 @@ body {
 ::-webkit-scrollbar-track { background: #1C1C1E; }
 ::-webkit-scrollbar-thumb { background: #C9A770; border-radius: 2px; }
 
-/* Page reveal animation */
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
+/* Per-page route-change animation (matches template's pgIn) */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .animate-page-in {
-  animation: fade-in 0.45s ease both;
+  animation: page-in 0.45s ease both;
 }
 
 /* Ticker */
@@ -85,8 +96,140 @@ body {
   max-height: 300px;
 }
 
-/* NProgress bar */
-#nprogress .bar {
-  background: #C9A770 !important;
-  height: 2px !important;
+/* ===================================================
+   RESPONSIVE LAYOUT CLASSES
+   Desktop ≥ 769px | Mobile < 769px
+   =================================================== */
+
+/* Product Detail — 2-col on desktop, 1-col on mobile */
+.r-pdp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+  margin-bottom: 5rem;
+}
+
+/* Cart — content + sidebar on desktop */
+.r-cart-grid {
+  display: grid;
+  grid-template-columns: 1fr 22rem;
+  gap: 4rem;
+  align-items: start;
+}
+.r-cart-summary {
+  width: 22rem;
+}
+
+/* Checkout — form + order summary on desktop */
+.r-checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 22rem;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Form fields — 2-col on desktop, 1-col on mobile */
+.r-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Nav links — visible on desktop only */
+.r-nav-links {
+  display: flex;
+  gap: 1.75rem;
+}
+
+/* Bottom nav — mobile only */
+.r-bottom-nav {
+  display: flex;
+}
+.r-bottom-spacer {
+  height: 4.5rem;
+}
+
+/* Profile stats — 3-col, tighter on mobile */
+.r-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* ===== MOBILE BREAKPOINT (< 769px) ===== */
+@media (max-width: 768px) {
+  .r-pdp-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .r-cart-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .r-cart-summary {
+    width: 100%;
+  }
+
+  .r-checkout-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .r-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .r-nav-links {
+    display: none;
+  }
+
+  .r-desktop-only {
+    display: none !important;
+  }
+}
+
+/* ===== DESKTOP BREAKPOINT (≥ 769px) ===== */
+@media (min-width: 769px) {
+  .r-mobile-only {
+    display: none !important;
+  }
+
+  /* Hide bottom nav on desktop — top nav handles navigation */
+  .r-bottom-nav {
+    display: none;
+  }
+  .r-bottom-spacer {
+    height: 0;
+    display: none;
+  }
+}
+
+/* ===== TABLET (640px – 768px): tighter product grid ===== */
+@media (min-width: 640px) and (max-width: 768px) {
+  .r-product-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1rem !important;
+  }
+}
+
+/* ===== SMALL MOBILE (< 480px) ===== */
+@media (max-width: 480px) {
+  /* Product grid: 2-col on small mobile (portrait cards look great at 2) */
+  .r-product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Tighter page padding on small screens */
+  .r-page-pad {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Stack cart item row better on very small screens */
+  .r-cart-item-price {
+    display: none;
+  }
 }

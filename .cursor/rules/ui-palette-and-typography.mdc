@@ -1,0 +1,49 @@
+---
+description: Domain-driven color palette and typography rules for all UI/template development
+alwaysApply: true
+---
+
+# UI Design — Palette & Typography
+
+## Color: Derived from the Domain's Physical World
+
+Each project gets **one base tone, one surface stack, one accent**. The palette comes from the physical materials and light of the domain — not from trend.
+
+| Domain | Base | Accent | Source |
+|--------|------|--------|--------|
+| Luxury fashion | `#1C1C1E` charcoal | `#C9A770` warm gold | candlelit ateliers, fabric |
+| Consumer tech | `#FFFFFF` white | `#2563EB` electric blue | lab light, product shots |
+| Home decor | `#FDFAF5` warm cream | `#C17B4A` terracotta | wood, linen, morning light |
+| Organic/food | `#FFFFFF` + `#1A2E1C` deep forest | `#2D7A2F` leaf green | farms, foliage |
+| Beauty/skincare | `#FCEEF3` blush + `#1C0510` deep plum | `#C94B6E` rose | petals, cosmetic packaging |
+| Sports/fitness | `#0A0A0A` near-black | `#CCFF00` electric lime | neon, performance tech |
+
+### Surface Stack (always 4 levels)
+`background` → `surface` → `elevated` → `variant`
+Depth is communicated through surface layers, not shadows.
+
+### Text Hierarchy (3 levels only)
+- Primary: high contrast (~`#F0F0F0` on dark, `#0f172a` on light)
+- Secondary: muted (~50% opacity of primary)
+- Hint/disabled: ~25–30% opacity of primary
+
+### Status Colors
+Never solid vivid backgrounds. Use `bg-{color}-900/30 text-{color}-400 border border-{color}-800/40` pattern — muted, bordered.
+
+---
+
+## Typography: Two Fonts, Domain-Matched
+
+| Domain | Display Font | Body | Tone |
+|--------|-------------|------|------|
+| Luxury fashion | Playfair Display | Inter | editorial, heritage |
+| Tech | Space Grotesk | Inter | modern, precise |
+| Home decor | Cormorant Garant | Inter | artisanal, slow |
+| Organic | Syne | Inter | earthy, direct |
+| Beauty | DM Serif Display | Inter | feminine authority |
+| Sports | Barlow Condensed | Inter | kinetic, compressed |
+
+- **Display font**: logo, product names in card, hero headings only
+- **Body font**: navigation, descriptions, prices, buttons — everything functional
+- **Never mix more than 2 fonts**
+- Section labels: `text-xs font-semibold uppercase tracking-widest` in secondary color

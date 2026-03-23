@@ -72,7 +72,7 @@ function CartContent() {
           </Link>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "4rem", alignItems: "start" }}>
+        <div className="r-cart-grid">
           {/* Items */}
           <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
             {items.map((item) => (
@@ -165,7 +165,7 @@ function CartContent() {
 
           {/* Summary */}
           {summary && (
-            <div style={{ width: "20rem", background: "#242426", padding: "1.75rem", flexShrink: 0 }}>
+            <div className="r-cart-summary" style={{ background: "#242426", padding: "1.75rem", flexShrink: 0 }}>
               <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 600, marginBottom: "1.5rem", color: "#F0F0F0" }}>
                 Order Summary
               </p>
@@ -233,7 +233,7 @@ export default function CartPage() {
       <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
         <CartContent />
         <Footer />
-        <div style={{ height: "4.5rem" }} />
+        <div className="r-bottom-spacer" />
         <BottomNav />
       </main>
     </AuthGuard>

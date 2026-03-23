@@ -1,0 +1,67 @@
+---
+description: Product card layout, image ratios, hover interactions, and accent usage rules for all UI/template development
+alwaysApply: true
+---
+
+# UI Design — Product Card, Interaction & Accent
+
+## Image Aspect Ratio Is Set by Domain
+
+| Domain | Ratio | Reason |
+|--------|-------|--------|
+| Fashion / Beauty | `3:4` portrait | Clothing and skincare mirror the vertical body/bottle |
+| Tech / Organic / Home / Sports | `1:1` square | Neutral product shots read cleanly square |
+
+**Never mix ratios within a grid.** Every card in a row must share the same ratio. Inconsistent ratios destroy visual rhythm.
+
+---
+
+## Product Card Hierarchy (Fixed Reading Order)
+
+```
+[Image]            ← always top, always the largest element
+[Category label]   ← accent color, uppercase, tracked, tiny (.65rem)
+[Product name]     ← display font or semibold sans, max 2 lines
+[Variant info]     ← weight / volume / size / rating — muted, small (.72rem)
+[Price]            ← accent color, bold
+[Original price]   ← muted, strikethrough, adjacent
+```
+
+This order mirrors the user's decision sequence: orient → identify → specify → decide. Do not reorder it.
+
+---
+
+## The Accent Color Has Exactly Three Jobs
+
+1. **Category label** above the product name
+2. **Product price**
+3. **CTA / badge / active state** — hover overlay, badge pill, active button
+
+It does **not** appear in body copy, backgrounds, or decoration. Scarcity is what gives it power.
+
+---
+
+## Hover Reveals Intent — Styled to Brand Tone
+
+The hover state reveals one thing only: a **"View Product"** signal. Style it to the brand, not to a UI default.
+
+| Domain | Hover style |
+|--------|-------------|
+| Luxury fashion | Frosted glass bar — `backdrop-filter: blur`, border, no hard color |
+| Tech | Solid accent fill button — functional, direct |
+| Home decor | Warm cream overlay panel — tactile, soft |
+| Organic | Subtle shadow lift only — honest, no overlay |
+| Beauty | Rose-tinted translucent overlay — sensory |
+| Sports | Electric accent fill, uppercase bold — decisive |
+
+**Rule:** The hover overlay uses the accent color. The transition is `200–300ms`. Never scale the whole card — only scale the image inside its clipping container (`group-hover:scale-105` on the `<img>`, not the card).
+
+---
+
+## Border Radius Signals Personality
+
+- **Pill** (`border-radius: 2rem`) → soft, approachable (Organic, Beauty)
+- **Small rect** (`2–6px`) → efficient, industrial (Tech, Sports)
+- **Near-zero / frameless** → couture, architectural (Fashion)
+
+Apply **consistently** across badges, buttons, and inputs within the same template. Never mix pill badges with sharp-rect buttons in the same theme.

@@ -1,0 +1,82 @@
+---
+description: Brand identity rules — footer, theme coherence, and the governing test for all UI/template development
+alwaysApply: true
+---
+
+# UI Design — Template Identity & Brand Coherence
+
+## The Footer Closes the Brand, Not the Page
+
+The footer background is always the **deepest dark tone of the palette**, regardless of whether the rest of the site is light or dark.
+
+| Domain | Footer background |
+|--------|------------------|
+| Fashion | `#1C1C1E` charcoal |
+| Tech | `#0f172a` deep navy |
+| Home decor | `#2C1810` dark walnut |
+| Organic | `#1A2E1C` deep forest |
+| Beauty | `#1C0510` deep plum |
+| Sports | `#050505` near-black |
+
+Footer rules:
+- Brand name in display font, generous size, full opacity
+- Body text at `rgba(foreground, 0.35)` — readable, clearly subordinate
+- Border separators at `rgba(foreground, 0.1)` — barely visible, structural only
+- Column layout: brand tagline / shop links / help links
+
+---
+
+## Each Template Is a Distinct Brand, Not a Reskin
+
+A customer buying gym gear thinks and feels differently from one buying skincare or artisan furniture. The template must match that mental state before a single word is read.
+
+Every template must have:
+- Its own brand name (e.g., Atelier Noir, NovaCommerce, Haven, Grove, Petal, Apex)
+- Its own tagline — one sentence, domain-true
+- Its own display font choice
+- Its own image ratio decision
+- Its own hover interaction style
+- Its own badge shape
+
+Sharing any of these across templates makes them feel like variations of the same thing. They must feel like competitors in their domain.
+
+---
+
+## Domain-Specific Data Fields in Product Cards
+
+Products display different supporting metadata based on what the buyer needs to decide:
+
+| Domain | Extra field shown |
+|--------|------------------|
+| Fashion | nothing (price + name is enough) |
+| Tech | star rating + review count |
+| Home decor | nothing (description-driven) |
+| Organic | weight / quantity (e.g., "500 g jar") |
+| Beauty | volume (e.g., "30 ml") |
+| Sports | star rating + review count |
+
+Show only what drives the purchase decision for that domain. Extra fields add noise.
+
+---
+
+## The Governing Test
+
+Before shipping any template, ask:
+
+> **Could a competitor in this domain have produced this?**
+
+If **yes** — the template is generic. Return to palette, font, and interaction choices.
+
+If **no** — color, type, image ratio, tone, and interaction have converged on a single coherent identity. That coherence is what makes it worth buying.
+
+---
+
+## Empty States Are Designed, Never Default
+
+Every empty state (no results, empty cart, empty wishlist) gets:
+1. A domain-appropriate icon
+2. A short headline
+3. A one-sentence sub-message
+4. A single CTA
+
+Never output `<p>No results.</p>` alone. The empty state is a brand moment.

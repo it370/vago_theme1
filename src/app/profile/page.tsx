@@ -72,7 +72,7 @@ function ProfileContent() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
+      <div className="r-stats-grid" style={{ marginBottom: "2.5rem" }}>
         <StatCard icon={<Package size={20} />} label="Orders" value={orders?.length ?? 0} href="/orders" />
         <StatCard icon={<Heart size={20} />} label="Saved" value={wishlist?.productIds.length ?? 0} href="/wishlist" />
         <StatCard icon={<ShoppingBag size={20} />} label="In Bag" value={cart?.summary.itemCount ?? 0} href="/cart" />
@@ -192,7 +192,7 @@ export default function ProfilePage() {
       <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
         <ProfileContent />
         <Footer />
-        <div style={{ height: "4.5rem" }} />
+        <div className="r-bottom-spacer" />
         <BottomNav />
       </main>
     </AuthGuard>

@@ -148,7 +148,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
         <OrderDetailContent id={id} />
         <Footer />
-        <div style={{ height: "4.5rem" }} />
+        <div className="r-bottom-spacer" />
         <BottomNav />
       </main>
     </AuthGuard>

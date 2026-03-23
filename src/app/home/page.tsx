@@ -509,7 +509,7 @@ export default function HomePage() {
       <Footer />
 
       {/* Mobile bottom nav spacer */}
-      <div style={{ height: "4.5rem" }} className="md:hidden" />
+      <div className="r-bottom-spacer" />
       <BottomNav />
     </main>
   );

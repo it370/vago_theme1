@@ -28,6 +28,7 @@ export function ProductCardSkeleton() {
 export function ProductGridSkeleton({ count = 8 }: { count?: number }) {
   return (
     <div
+      className="r-product-grid"
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",

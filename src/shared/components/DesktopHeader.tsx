@@ -58,26 +58,30 @@ export function DesktopHeader() {
           borderBottom: "1px solid rgba(255,255,255,0.07)",
         }}
       >
+        {/*
+          3-column grid: [left nav | center brand | right icons]
+          The brand column is "auto" width so it sits exactly in the middle
+          at every viewport — no position:absolute needed.
+        */}
         <div
           style={{
             maxWidth: "72rem",
             margin: "0 auto",
             padding: "0 1.5rem",
-            display: "flex",
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
             alignItems: "center",
-            justifyContent: "space-between",
             height: "4rem",
-            position: "relative",
           }}
         >
-          {/* Left nav */}
-          <div style={{ display: "flex", gap: "1.75rem" }}>
+          {/* Left: nav links (hidden on mobile via .r-nav-links) */}
+          <div className="r-nav-links">
             <NavLink href="/categories">Collections</NavLink>
             <NavLink href="/categories">New Arrivals</NavLink>
             <NavLink href="/search?q=sale">Sale</NavLink>
           </div>
 
-          {/* Center brand */}
+          {/* Center: brand — always in the true center column */}
           <Link
             href="/home"
             style={{
@@ -86,17 +90,15 @@ export function DesktopHeader() {
               letterSpacing: "0.3em",
               color: "#C9A770",
               fontWeight: 700,
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
               textDecoration: "none",
+              whiteSpace: "nowrap",
             }}
           >
             {APP_NAME}
           </Link>
 
-          {/* Right actions */}
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {/* Right: action icons — pushed to the right end */}
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", justifyContent: "flex-end" }}>
             <button
               onClick={() => setSearchOpen(!searchOpen)}
               style={iconBtnStyle}

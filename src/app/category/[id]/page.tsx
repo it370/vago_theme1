@@ -76,7 +76,7 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
       </div>
 
       <Footer />
-      <div style={{ height: "4.5rem" }} />
+      <div className="r-bottom-spacer" />
       <BottomNav />
     </main>
   );

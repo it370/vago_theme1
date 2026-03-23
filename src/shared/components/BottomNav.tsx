@@ -19,6 +19,7 @@ export function BottomNav() {
 
   return (
     <nav
+      className="r-bottom-nav"
       style={{
         position: "fixed",
         bottom: 0,
@@ -28,7 +29,6 @@ export function BottomNav() {
         background: "rgba(28,28,30,0.97)",
         backdropFilter: "blur(16px)",
         borderTop: "1px solid rgba(255,255,255,0.07)",
-        display: "flex",
         padding: "0.5rem 0 env(safe-area-inset-bottom, 0.5rem)",
       }}
     >

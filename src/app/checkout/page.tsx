@@ -82,14 +82,14 @@ function CheckoutContent() {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        style={{ display: "grid", gridTemplateColumns: "1fr 20rem", gap: "4rem", alignItems: "start" }}
+        className="r-checkout-grid"
       >
         {/* Address form */}
         <div>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             Shipping Address
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+          <div className="r-form-grid">
             <Field label="Full Name" error={errors.name?.message}>
               <input {...register("name")} style={inputStyle} placeholder="John Doe" />
             </Field>
@@ -246,7 +246,7 @@ export default function CheckoutPage() {
     <AuthGuard>
       <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
         <CheckoutContent />
-        <div style={{ height: "4.5rem" }} />
+        <div className="r-bottom-spacer" />
         <BottomNav />
       </main>
     </AuthGuard>

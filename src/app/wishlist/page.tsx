@@ -63,7 +63,7 @@ export default function WishlistPage() {
       <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
         <WishlistContent />
         <Footer />
-        <div style={{ height: "4.5rem" }} />
+        <div className="r-bottom-spacer" />
         <BottomNav />
       </main>
     </AuthGuard>
