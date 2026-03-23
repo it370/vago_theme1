@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { APP_NAME } from "@/shared/constants/app";
+import { APP_NAME, LEGAL_LINKS } from "@/shared/constants/app";
 
 export function Footer() {
   return (
@@ -48,20 +48,20 @@ export function Footer() {
           <div>
             <p style={colHeadStyle}>Shop</p>
             <ul style={listStyle}>
-              <li><FooterLink href="/categories">New Arrivals</FooterLink></li>
-              <li><FooterLink href="/categories">Women</FooterLink></li>
-              <li><FooterLink href="/categories">Accessories</FooterLink></li>
-              <li><FooterLink href="/search?q=sale">Sale</FooterLink></li>
+              <li><FooterLink href="/new-arrivals">New Arrivals</FooterLink></li>
+              <li><FooterLink href="/categories">Collections</FooterLink></li>
+              <li><FooterLink href="/sale">Sale & Offers</FooterLink></li>
+              <li><FooterLink href="/search?q=">Browse All</FooterLink></li>
             </ul>
           </div>
 
-          {/* Help */}
+          {/* Legal */}
           <div>
-            <p style={colHeadStyle}>Help</p>
+            <p style={colHeadStyle}>Legal & Support</p>
             <ul style={listStyle}>
-              <li><FooterLink href="#">Sizing Guide</FooterLink></li>
-              <li><FooterLink href="#">Shipping & Returns</FooterLink></li>
-              <li><FooterLink href="#">Contact Us</FooterLink></li>
+              <li><FooterLink href={LEGAL_LINKS.privacy} external>Privacy Policy</FooterLink></li>
+              <li><FooterLink href={LEGAL_LINKS.terms} external>Terms of Service</FooterLink></li>
+              <li><FooterLink href={LEGAL_LINKS.contact} external>Contact Us</FooterLink></li>
             </ul>
           </div>
 
@@ -70,8 +70,10 @@ export function Footer() {
             <p style={colHeadStyle}>Account</p>
             <ul style={listStyle}>
               <li><FooterLink href="/login">Sign In</FooterLink></li>
+              <li><FooterLink href="/profile">My Profile</FooterLink></li>
               <li><FooterLink href="/orders">My Orders</FooterLink></li>
               <li><FooterLink href="/wishlist">Wishlist</FooterLink></li>
+              <li><FooterLink href="/cart">Cart</FooterLink></li>
             </ul>
           </div>
         </div>
@@ -117,13 +119,26 @@ const listStyle: React.CSSProperties = {
   gap: "0.55rem",
 };
 
-function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.8rem", textDecoration: "none" }}
-    >
-      {children}
-    </Link>
-  );
+function FooterLink({
+  href,
+  children,
+  external,
+}: {
+  href: string;
+  children: React.ReactNode;
+  external?: boolean;
+}) {
+  const style: React.CSSProperties = {
+    color: "rgba(255,255,255,0.3)",
+    fontSize: "0.8rem",
+    textDecoration: "none",
+  };
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" style={style}>
+        {children}
+      </a>
+    );
+  }
+  return <Link href={href} style={style}>{children}</Link>;
 }
