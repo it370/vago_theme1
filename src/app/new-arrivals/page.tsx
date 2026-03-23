@@ -1,16 +1,30 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useNewArrivals } from "@/features/home/queries";
 import { ProductGrid } from "@/shared/components/ProductGrid";
+import { ListingToolbar } from "@/shared/components/ListingToolbar";
+import type { ViewMode } from "@/shared/components/ListingToolbar";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 
 export default function NewArrivalsPage() {
+  const [sortBy, setSortBy] = useState("newest");
+  const [view, setView] = useState<ViewMode>("grid");
+
   const { data, isLoading } = useNewArrivals();
 
-  const products = data?.products;
   const label = data?.label ?? "New Arrivals";
+  const allProducts = data?.products ?? [];
+
+  // Client-side sort since new-arrivals endpoint returns a fixed list
+  const products = [...allProducts].sort((a, b) => {
+    if (sortBy === "price_asc") return (a.salePrice ?? a.price) - (b.salePrice ?? b.price);
+    if (sortBy === "price_desc") return (b.salePrice ?? b.price) - (a.salePrice ?? a.price);
+    if (sortBy === "name_asc") return a.name.localeCompare(b.name);
+    return 0; // newest — keep original order
+  });
 
   return (
     <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
@@ -55,26 +69,22 @@ export default function NewArrivalsPage() {
           >
             Just Arrived
           </h1>
-          {products && !isLoading && (
-            <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.82rem", marginTop: "0.4rem" }}>
-              {products.length} piece{products.length !== 1 ? "s" : ""}
-            </p>
-          )}
         </div>
 
-        {/* Divider */}
-        <div
-          style={{
-            marginBottom: "2.5rem",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
+        <ListingToolbar
+          totalItems={products.length || undefined}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          view={view}
+          onViewChange={setView}
+          isLoading={isLoading}
         />
 
-        {/* Product grid */}
         <ProductGrid
           products={products}
           isLoading={isLoading}
           skeletonCount={12}
+          view={view}
           emptyMessage="New pieces are on their way. Check back soon."
         />
       </div>

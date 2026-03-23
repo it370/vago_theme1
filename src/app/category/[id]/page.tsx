@@ -1,20 +1,25 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useFeed } from "@/features/home/queries";
 import { useProducts } from "@/features/products/queries";
 import { ProductGrid } from "@/shared/components/ProductGrid";
+import { ListingToolbar } from "@/shared/components/ListingToolbar";
+import type { ViewMode } from "@/shared/components/ListingToolbar";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { resolveCategoryIdForApi } from "@/shared/lib/categoryRoutes";
 
 export default function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: segment } = use(params);
+  const [sortBy, setSortBy] = useState("newest");
+  const [view, setView] = useState<ViewMode>("grid");
+
   const { data: feed } = useFeed();
   const categories = feed?.categories;
   const categoryIdForApi = resolveCategoryIdForApi(segment, categories);
-  const { data: products, isLoading } = useProducts({ categoryId: categoryIdForApi });
+  const { data: products, isLoading } = useProducts({ categoryId: categoryIdForApi, sortBy });
 
   const category = categories?.find((c) => c.id === categoryIdForApi);
 
@@ -68,14 +73,18 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
           >
             {category?.name ?? "Collection"}
           </h1>
-          {products && (
-            <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.82rem" }}>
-              {products.length} piece{products.length !== 1 ? "s" : ""}
-            </p>
-          )}
         </div>
 
-        <ProductGrid products={products} isLoading={isLoading} skeletonCount={8} />
+        <ListingToolbar
+          totalItems={products?.length}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          view={view}
+          onViewChange={setView}
+          isLoading={isLoading}
+        />
+
+        <ProductGrid products={products} isLoading={isLoading} skeletonCount={8} view={view} />
       </div>
 
       <Footer />

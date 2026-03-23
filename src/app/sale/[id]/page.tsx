@@ -1,9 +1,11 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useOffers, useOfferProducts } from "@/features/offers/queries";
 import { ProductGrid } from "@/shared/components/ProductGrid";
+import { ListingToolbar } from "@/shared/components/ListingToolbar";
+import type { ViewMode } from "@/shared/components/ListingToolbar";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 
@@ -13,8 +15,20 @@ export default function OfferDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const [sortBy, setSortBy] = useState("newest");
+  const [view, setView] = useState<ViewMode>("grid");
+
   const { data: offers } = useOffers();
-  const { data: products, isLoading } = useOfferProducts(id);
+  const { data: rawProducts, isLoading } = useOfferProducts(id);
+
+  const products = rawProducts
+    ? [...rawProducts].sort((a, b) => {
+        if (sortBy === "price_asc") return (a.salePrice ?? a.price) - (b.salePrice ?? b.price);
+        if (sortBy === "price_desc") return (b.salePrice ?? b.price) - (a.salePrice ?? a.price);
+        if (sortBy === "name_asc") return a.name.localeCompare(b.name);
+        return 0;
+      })
+    : undefined;
 
   const offer = offers?.find((o) => o.id === id);
 
@@ -74,21 +88,22 @@ export default function OfferDetailPage({
               {offer.subtitle}
             </p>
           )}
-          {products && !isLoading && (
-            <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.82rem", marginTop: "0.4rem" }}>
-              {products.length} piece{products.length !== 1 ? "s" : ""}
-            </p>
-          )}
         </div>
 
-        {/* Divider */}
-        <div style={{ marginBottom: "2.5rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }} />
+        <ListingToolbar
+          totalItems={products?.length}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          view={view}
+          onViewChange={setView}
+          isLoading={isLoading}
+        />
 
-        {/* Products */}
         <ProductGrid
           products={products}
           isLoading={isLoading}
           skeletonCount={12}
+          view={view}
           emptyMessage="No items in this offer at the moment. Check back soon."
         />
       </div>

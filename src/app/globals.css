@@ -267,6 +267,53 @@ body.vago-revealed {
   }
 }
 
+/* ===== LISTING TOOLBAR ===== */
+.listing-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.listing-toolbar__pills-wrap {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.listing-toolbar__pills-wrap::-webkit-scrollbar { display: none; }
+
+.listing-toolbar__pills {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: nowrap;
+}
+
+/* ===== PRODUCT ROW CARD ===== */
+.product-row-card {
+  display: flex;
+  align-items: stretch;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.15s;
+  cursor: pointer;
+}
+.product-row-card:first-child {
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.product-row-card:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+@media (min-width: 640px) {
+  :root { --row-card-img-w: 130px; }
+}
+
 /* ===== HOT DEALS SCROLL STRIP ===== */
 .hot-deals-scroll {
   -ms-overflow-style: none;

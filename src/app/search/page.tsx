@@ -4,6 +4,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import { useProducts } from "@/features/products/queries";
 import { ProductGrid } from "@/shared/components/ProductGrid";
+import { ListingToolbar } from "@/shared/components/ListingToolbar";
+import type { ViewMode } from "@/shared/components/ListingToolbar";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { Search } from "lucide-react";
@@ -14,8 +16,19 @@ function SearchContent() {
   const initialQ = sp.get("q") ?? "";
   const [inputVal, setInputVal] = useState(initialQ);
   const [query, setQuery] = useState(initialQ);
+  const [sortBy, setSortBy] = useState("newest");
+  const [view, setView] = useState<ViewMode>("grid");
 
-  const { data: products, isLoading } = useProducts({ search: query || undefined });
+  const { data: rawProducts, isLoading } = useProducts({ search: query || undefined, sortBy });
+
+  const products = rawProducts
+    ? [...rawProducts].sort((a, b) => {
+        if (sortBy === "price_asc") return (a.salePrice ?? a.price) - (b.salePrice ?? b.price);
+        if (sortBy === "price_desc") return (b.salePrice ?? b.price) - (a.salePrice ?? a.price);
+        if (sortBy === "name_asc") return a.name.localeCompare(b.name);
+        return 0;
+      })
+    : undefined;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -107,21 +120,23 @@ function SearchContent() {
           </div>
         </form>
 
-        {/* Results */}
+        {/* Toolbar — only shown when there's a query */}
         {query && (
-          <div style={{ marginBottom: "2rem" }}>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem" }}>
-              {isLoading
-                ? "Searching…"
-                : `${products?.length ?? 0} result${products?.length !== 1 ? "s" : ""} for "${query}"`}
-            </p>
-          </div>
+          <ListingToolbar
+            totalItems={isLoading ? undefined : (products?.length ?? 0)}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            view={view}
+            onViewChange={setView}
+            isLoading={isLoading}
+          />
         )}
 
         <ProductGrid
           products={products}
           isLoading={isLoading && !!query}
           skeletonCount={8}
+          view={view}
           emptyMessage={query ? `No products found for "${query}".` : "Enter a search term above."}
         />
       </div>

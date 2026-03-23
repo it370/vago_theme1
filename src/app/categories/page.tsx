@@ -5,6 +5,8 @@ import { useFeed } from "@/features/home/queries";
 import { useProducts } from "@/features/products/queries";
 import { ProductGrid } from "@/shared/components/ProductGrid";
 import { FilterPanel } from "@/shared/components/FilterPanel";
+import { ListingToolbar } from "@/shared/components/ListingToolbar";
+import type { ViewMode } from "@/shared/components/ListingToolbar";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { AppImage } from "@/shared/components/AppImage";
@@ -14,6 +16,7 @@ export default function CategoriesPage() {
   const { data: feed } = useFeed();
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("newest");
+  const [view, setView] = useState<ViewMode>("grid");
 
   const { data: products, isLoading } = useProducts({
     categoryId: activeCategoryId ?? undefined,
@@ -77,42 +80,12 @@ export default function CategoriesPage() {
                 ? (categories.find((c) => c.id === activeCategoryId)?.name ?? "Collection")
                 : "Full Collection"}
             </h1>
-            {products && (
-              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.82rem", marginTop: "0.4rem" }}>
-                {products.length} piece{products.length !== 1 ? "s" : ""}
-              </p>
-            )}
           </div>
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            style={{
-              background: "#2C2C2E",
-              color: "rgba(255,255,255,0.7)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              padding: "0.5rem 0.9rem",
-              fontSize: "0.78rem",
-              fontFamily: "'Inter', sans-serif",
-              cursor: "pointer",
-              outline: "none",
-              borderRadius: "0.25rem",
-            }}
-          >
-            <option value="newest">Newest First</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
-          </select>
         </div>
 
-        {/* Filter pills */}
-        <div
-          style={{
-            marginBottom: "2.5rem",
-            paddingBottom: "1.5rem",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
+        {/* Category filter pills */}
+        <div style={{ marginBottom: "1.5rem" }}>
           <FilterPanel
             categories={categories}
             activeId={activeCategoryId}
@@ -120,8 +93,17 @@ export default function CategoriesPage() {
           />
         </div>
 
-        {/* Product grid */}
-        <ProductGrid products={products} isLoading={isLoading} skeletonCount={12} />
+        {/* Toolbar — sort + view toggle */}
+        <ListingToolbar
+          totalItems={products?.length}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          view={view}
+          onViewChange={setView}
+          isLoading={isLoading}
+        />
+
+        <ProductGrid products={products} isLoading={isLoading} skeletonCount={12} view={view} />
       </div>
 
       <Footer />

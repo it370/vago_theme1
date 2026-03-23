@@ -1,5 +1,7 @@
 import type { Product } from "@/shared/types";
+import type { ViewMode } from "./ListingToolbar";
 import { ProductCard } from "./ProductCard";
+import { ProductRowCard } from "./ProductRowCard";
 import { ProductGridSkeleton } from "./Shimmer";
 
 interface ProductGridProps {
@@ -7,6 +9,7 @@ interface ProductGridProps {
   isLoading?: boolean;
   skeletonCount?: number;
   emptyMessage?: string;
+  view?: ViewMode;
 }
 
 export function ProductGrid({
@@ -14,6 +17,7 @@ export function ProductGrid({
   isLoading,
   skeletonCount = 8,
   emptyMessage = "No products found.",
+  view = "grid",
 }: ProductGridProps) {
   if (isLoading) {
     return <ProductGridSkeleton count={skeletonCount} />;
@@ -44,6 +48,16 @@ export function ProductGrid({
           Nothing here yet
         </p>
         <p style={{ fontSize: "0.85rem" }}>{emptyMessage}</p>
+      </div>
+    );
+  }
+
+  if (view === "row") {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+        {products.map((p) => (
+          <ProductRowCard key={p.id} product={p} />
+        ))}
       </div>
     );
   }
