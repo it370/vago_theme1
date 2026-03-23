@@ -1,76 +1,133 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCart, useClearCart } from "@/features/cart/queries";
+import { z } from "zod";
+import { Info } from "lucide-react";
+import { useCart } from "@/features/cart/queries";
 import { usePlaceOrder } from "@/features/orders/queries";
+import { useCheckoutNotes } from "@/features/checkout/queries";
+import { SellerNotesPanel, SellerNotesPanelSkeleton } from "@/shared/components/SellerNotesPanel";
 import { AuthGuard } from "@/shared/components/AuthGuard";
 import { BottomNav } from "@/shared/components/BottomNav";
+import { AppImage } from "@/shared/components/AppImage";
 import { formatPrice } from "@/features/products/normalize";
-import type { PlaceOrderBody } from "@/shared/types";
+import type { CartItem, CartSummary } from "@/shared/types";
+
+/* ── Constants ─────────────────────────────────────────── */
+
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
+  "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
+  "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
+  "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+];
+
+const ADDRESS_STORAGE_KEY = "vago_address_v2";
+
+/* ── Schema ─────────────────────────────────────────────── */
 
 const schema = z.object({
-  name: z.string().min(2, "Name is required"),
-  phone: z.string().min(10, "Valid phone required"),
-  flatHouse: z.string().min(1, "Flat/House is required"),
-  street: z.string().min(1, "Street is required"),
-  city: z.string().min(1, "City is required"),
+  name: z.string().min(2, "Full name is required"),
+  phone: z.string().min(10, "Enter a valid phone number").max(10, "Enter a valid phone number"),
+  flatHouse: z.string().min(1, "Flat/House number is required"),
+  street: z.string().min(3, "Street address is required"),
+  city: z.string().min(2, "City is required"),
   state: z.string().min(1, "State is required"),
-  pinCode: z.string().length(6, "Enter 6-digit pin code"),
+  pinCode: z.string().length(6, "PIN code must be 6 digits"),
   notes: z.string().optional(),
+  saveAddress: z.boolean().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
+/* ── Main content ───────────────────────────────────────── */
+
 function CheckoutContent() {
   const router = useRouter();
-  const { data: cart } = useCart();
-  const placeOrder = usePlaceOrder();
-  const clearCart = useClearCart();
+  const { data: cart, isLoading: cartLoading } = useCart();
+  const { mutate: placeOrder, isPending, isError, error } = usePlaceOrder();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { saveAddress: true, state: "" },
+  });
+
+  // Restore saved address from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(ADDRESS_STORAGE_KEY);
+      if (saved) {
+        const addr = JSON.parse(saved) as Partial<FormData>;
+        Object.entries(addr).forEach(([k, v]) =>
+          setValue(k as keyof FormData, v as string)
+        );
+      }
+    } catch { /* ignore */ }
+  }, [setValue]);
 
   const items = cart?.items ?? [];
   const summary = cart?.summary;
+  const total = summary?.subtotalPayable ?? 0;
+  const productIds = items.map((i) => i.productId);
 
-  async function onSubmit(data: FormData) {
-    if (!cart || items.length === 0) return;
+  const { data: sellerNotes, isLoading: notesLoading } = useCheckoutNotes(productIds);
 
-    const body: PlaceOrderBody = {
-      address: {
-        name: data.name,
-        phone: data.phone,
-        flatHouse: data.flatHouse,
-        street: data.street,
-        city: data.city,
-        state: data.state,
-        pinCode: data.pinCode,
+  const errorMessage = isError
+    ? (() => {
+        const e = error as { statusCode?: number; message?: string };
+        if (!e.statusCode || e.statusCode >= 500)
+          return "We couldn't place your order. Please try again.";
+        return e.message ?? "Something went wrong. Please try again.";
+      })()
+    : null;
+
+  function onSubmit(data: FormData) {
+    if (data.saveAddress) {
+      try {
+        localStorage.setItem(ADDRESS_STORAGE_KEY, JSON.stringify(data));
+      } catch { /* ignore */ }
+    }
+    placeOrder(
+      {
+        address: {
+          name: data.name,
+          phone: data.phone,
+          flatHouse: data.flatHouse,
+          street: data.street,
+          city: data.city,
+          state: data.state,
+          pinCode: data.pinCode,
+        },
+        items: items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          priceAtPurchase: item.unitPrice ?? 0,
+          selectedSize: item.selectedSize,
+          selectedColor: item.selectedColor,
+          productSnapshot: item.product
+            ? (item.product as unknown as Record<string, unknown>)
+            : null,
+        })),
+        totalAmount: summary?.subtotalPayable ?? 0,
+        notes: data.notes,
       },
-      items: items.map((item) => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        priceAtPurchase: item.unitPrice ?? item.product?.price ?? 0,
-        selectedSize: item.selectedSize,
-        selectedColor: item.selectedColor,
-        productSnapshot: item.product ? { name: item.product.name, images: item.product.images } : null,
-      })),
-      totalAmount: summary?.subtotalPayable ?? 0,
-      notes: data.notes,
-    };
-
-    const order = await placeOrder.mutateAsync(body);
-    clearCart.mutate();
-    router.push(`/orders/${order.id}`);
+      { onSuccess: (order) => router.replace(`/orders/${order.id}`) }
+    );
   }
 
   return (
     <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 8rem" }}>
+      {/* Page heading */}
       <div style={{ marginBottom: "2.5rem" }}>
         <p style={{ color: "#C9A770", fontSize: "0.65rem", letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
           Final Step
@@ -80,118 +137,282 @@ function CheckoutContent() {
         </h1>
       </div>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="r-checkout-grid"
-      >
-        {/* Address form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="r-checkout-grid">
+
+        {/* ── Address form ────────────────────────────────── */}
         <div>
-          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-            Shipping Address
-          </p>
-          <div className="r-form-grid">
+          <p style={sectionLabelStyle}>Delivery Address</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+
             <Field label="Full Name" error={errors.name?.message}>
               <input {...register("name")} style={inputStyle} placeholder="John Doe" />
             </Field>
-            <Field label="Phone" error={errors.phone?.message}>
-              <input {...register("phone")} style={inputStyle} placeholder="9876543210" />
-            </Field>
-            <Field label="Flat / House No." error={errors.flatHouse?.message} full>
-              <input {...register("flatHouse")} style={inputStyle} placeholder="Apt 4B, Building Name" />
-            </Field>
-            <Field label="Street / Area" error={errors.street?.message} full>
-              <input {...register("street")} style={inputStyle} placeholder="MG Road, Sector 12" />
-            </Field>
-            <Field label="City" error={errors.city?.message}>
-              <input {...register("city")} style={inputStyle} placeholder="Mumbai" />
-            </Field>
-            <Field label="State" error={errors.state?.message}>
-              <input {...register("state")} style={inputStyle} placeholder="Maharashtra" />
-            </Field>
-            <Field label="Pin Code" error={errors.pinCode?.message}>
-              <input {...register("pinCode")} style={inputStyle} placeholder="400001" maxLength={6} />
-            </Field>
-          </div>
 
-          <div style={{ marginTop: "1.5rem" }}>
+            {/* Phone with +91 prefix */}
+            <Field label="Phone Number" error={errors.phone?.message}>
+              <div style={{ display: "flex", border: "1px solid rgba(255,255,255,0.1)", overflow: "hidden" }}>
+                <span style={{ padding: "0.65rem 0.75rem", fontSize: "0.88rem", color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.04)", borderRight: "1px solid rgba(255,255,255,0.1)", whiteSpace: "nowrap" }}>
+                  +91
+                </span>
+                <input
+                  {...register("phone")}
+                  type="tel"
+                  maxLength={10}
+                  placeholder="9876543210"
+                  style={{ ...inputStyle, border: "none", flex: 1 }}
+                />
+              </div>
+            </Field>
+
+            <Field label="Flat / House No." error={errors.flatHouse?.message}>
+              <input {...register("flatHouse")} style={inputStyle} placeholder="Flat 4B, Building Name" />
+            </Field>
+
+            <Field label="Street / Area" error={errors.street?.message}>
+              <input {...register("street")} style={inputStyle} placeholder="Street address, locality" />
+            </Field>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+              <Field label="City" error={errors.city?.message}>
+                <input {...register("city")} style={inputStyle} placeholder="Mumbai" />
+              </Field>
+              <Field label="PIN Code" error={errors.pinCode?.message}>
+                <input {...register("pinCode")} type="tel" maxLength={6} style={inputStyle} placeholder="400001" />
+              </Field>
+            </div>
+
+            {/* State dropdown */}
+            <Field label="State" error={errors.state?.message}>
+              <select {...register("state")} style={{ ...inputStyle, cursor: "pointer" }}>
+                <option value="">Select state</option>
+                {INDIAN_STATES.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </Field>
+
             <Field label="Order Notes (optional)">
               <textarea
                 {...register("notes")}
                 rows={3}
                 style={{ ...inputStyle, resize: "vertical" }}
-                placeholder="Any special instructions?"
+                placeholder="Any special instructions for your order…"
               />
             </Field>
+
+            {/* Save address checkbox */}
+            <label style={{ display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer" }}>
+              <input type="checkbox" {...register("saveAddress")} style={{ width: "1rem", height: "1rem", accentColor: "#C9A770" }} />
+              <span style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.5)" }}>
+                Save address for next time
+              </span>
+            </label>
+
+            {/* Mobile order summary */}
+            <div className="r-checkout-mobile-summary">
+              <p style={sectionLabelStyle}>Order Summary</p>
+              <OrderSummaryItems items={items} summary={summary} total={total} />
+            </div>
+
+            {/* Seller notes */}
+            {notesLoading && productIds.length > 0 && <SellerNotesPanelSkeleton />}
+            {sellerNotes && <SellerNotesPanel notes={sellerNotes} />}
+
+            {/* No payment banner */}
+            <InfoBanner>
+              No payment required now. We will contact you to confirm your order.
+            </InfoBanner>
+
+            {/* Error banner */}
+            {errorMessage && <ErrorBanner>{errorMessage}</ErrorBanner>}
+
+            {/* Mobile CTA */}
+            <div className="r-checkout-mobile-cta">
+              <PlaceOrderButton isPending={isPending} cartLoading={cartLoading} itemCount={items.length} />
+            </div>
           </div>
         </div>
 
-        {/* Order summary */}
-        <div style={{ background: "#242426", padding: "1.75rem" }}>
-          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 600, marginBottom: "1.5rem", color: "#F0F0F0" }}>
-            Your Order
-          </p>
+        {/* ── Desktop sticky sidebar ────────────────────── */}
+        <div className="r-checkout-sidebar">
+          <div style={{ background: "#242426", padding: "1.75rem", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+            <p style={sectionLabelStyle}>Your Order</p>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
-            {items.map((item) => (
-              <div
-                key={item.id}
-                style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-              >
-                <div>
-                  <p style={{ color: "#F0F0F0", fontSize: "0.82rem" }}>{item.product?.name ?? "Product"}</p>
-                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.72rem" }}>Qty {item.quantity}</p>
-                </div>
-                <span style={{ color: "#C9A770", fontSize: "0.82rem" }}>
-                  {item.lineTotal !== undefined ? formatPrice(item.lineTotal) : "—"}
-                </span>
-              </div>
-            ))}
+            <OrderSummaryItems items={items} summary={summary} total={total} />
+
+            {/* Seller notes */}
+            {notesLoading && productIds.length > 0 && <SellerNotesPanelSkeleton />}
+            {sellerNotes && <SellerNotesPanel notes={sellerNotes} />}
+
+            <InfoBanner compact>No payment required now.</InfoBanner>
+
+            {errorMessage && <ErrorBanner compact>{errorMessage}</ErrorBanner>}
+
+            <PlaceOrderButton isPending={isPending} cartLoading={cartLoading} itemCount={items.length} />
           </div>
-
-          {summary && (
-            <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-              {summary.totalDiscount > 0 && (
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-                  <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.8rem" }}>Savings</span>
-                  <span style={{ color: "#4ADE80", fontSize: "0.8rem" }}>-{formatPrice(summary.totalDiscount)}</span>
-                </div>
-              )}
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-                <span style={{ color: "#F0F0F0", fontWeight: 600 }}>Total</span>
-                <span style={{ color: "#C9A770", fontWeight: 700, fontSize: "1rem" }}>
-                  {formatPrice(summary.subtotalPayable)}
-                </span>
-              </div>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isSubmitting || items.length === 0}
-            style={{
-              width: "100%",
-              background: "#C9A770",
-              color: "#1C1C1E",
-              fontWeight: 700,
-              fontSize: "0.82rem",
-              padding: "0.9rem",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              border: "none",
-              cursor: isSubmitting ? "not-allowed" : "pointer",
-              fontFamily: "'Inter', sans-serif",
-              opacity: isSubmitting ? 0.7 : 1,
-              transition: "opacity 0.2s",
-            }}
-          >
-            {isSubmitting ? "Placing Order…" : "Place Order"}
-          </button>
-
-          <p style={{ marginTop: "0.75rem", color: "rgba(255,255,255,0.2)", fontSize: "0.72rem", textAlign: "center" }}>
-            Cash on delivery. No payment required now.
-          </p>
         </div>
       </form>
+    </div>
+  );
+}
+
+/* ── Sub-components ─────────────────────────────────────── */
+
+function OrderSummaryItems({
+  items,
+  summary,
+  total,
+}: {
+  items: CartItem[];
+  summary?: CartSummary;
+  total: number;
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      {items.map((item) => (
+        <div key={item.id} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          {/* Thumbnail */}
+          {item.product?.images?.[0] ? (
+            <div style={{ position: "relative", width: "3rem", height: "3rem", flexShrink: 0, background: "#2C2C2E" }}>
+              <AppImage
+                src={item.product.images[0]}
+                alt={item.product.name}
+                fill
+                sizes="48px"
+                objectFit="cover"
+              />
+            </div>
+          ) : (
+            <div style={{ width: "3rem", height: "3rem", flexShrink: 0, background: "#2C2C2E" }} />
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: "0.82rem", color: "#F0F0F0", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+              {item.product?.name ?? "Product"}
+            </p>
+            <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)" }}>Qty: {item.quantity}</p>
+          </div>
+          <p style={{ fontSize: "0.82rem", color: "#C9A770", fontWeight: 600, flexShrink: 0 }}>
+            {item.lineTotal !== undefined ? formatPrice(item.lineTotal) : "—"}
+          </p>
+        </div>
+      ))}
+
+      {summary && (
+        <div style={{ paddingTop: "0.75rem", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem" }}>
+            <span style={{ color: "rgba(255,255,255,0.4)" }}>Subtotal</span>
+            <span style={{ color: "#F0F0F0" }}>{formatPrice(summary.subtotalOriginal)}</span>
+          </div>
+          {summary.totalDiscount > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem" }}>
+              <span style={{ color: "rgba(255,255,255,0.4)" }}>Savings</span>
+              <span style={{ color: "#4ADE80" }}>-{formatPrice(summary.totalDiscount)}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.75rem", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <span style={{ fontWeight: 600, color: "#F0F0F0" }}>Total</span>
+        <span style={{ fontWeight: 700, fontSize: "1rem", color: "#C9A770" }}>{formatPrice(total)}</span>
+      </div>
+    </div>
+  );
+}
+
+function PlaceOrderButton({
+  isPending,
+  cartLoading,
+  itemCount,
+}: {
+  isPending: boolean;
+  cartLoading: boolean;
+  itemCount: number;
+}) {
+  return (
+    <button
+      type="submit"
+      disabled={isPending || cartLoading || itemCount === 0}
+      style={{
+        width: "100%",
+        background: "#C9A770",
+        color: "#1C1C1E",
+        fontWeight: 700,
+        fontSize: "0.78rem",
+        padding: "0.9rem",
+        letterSpacing: "0.15em",
+        textTransform: "uppercase",
+        border: "none",
+        cursor: isPending || cartLoading || itemCount === 0 ? "not-allowed" : "pointer",
+        fontFamily: "'Inter', sans-serif",
+        opacity: isPending || cartLoading || itemCount === 0 ? 0.65 : 1,
+        transition: "opacity 0.2s",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "0.5rem",
+      }}
+    >
+      {isPending ? (
+        <>
+          <span
+            style={{
+              width: "1rem",
+              height: "1rem",
+              border: "2px solid rgba(28,28,30,0.3)",
+              borderTopColor: "#1C1C1E",
+              borderRadius: "50%",
+              display: "inline-block",
+              animation: "spin 0.7s linear infinite",
+            }}
+          />
+          Placing Order…
+        </>
+      ) : (
+        "Place Order"
+      )}
+    </button>
+  );
+}
+
+function InfoBanner({ children, compact }: { children: React.ReactNode; compact?: boolean }) {
+  return (
+    <div
+      style={{
+        background: "rgba(59,130,246,0.08)",
+        border: "1px solid rgba(59,130,246,0.2)",
+        borderRadius: "0.25rem",
+        padding: compact ? "0.6rem 0.75rem" : "0.75rem 1rem",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "0.5rem",
+      }}
+    >
+      <Info size={compact ? 13 : 15} style={{ color: "#60A5FA", flexShrink: 0, marginTop: "0.1rem" }} />
+      <p style={{ fontSize: compact ? "0.72rem" : "0.78rem", color: "#60A5FA", lineHeight: 1.6 }}>
+        {children}
+      </p>
+    </div>
+  );
+}
+
+function ErrorBanner({ children, compact }: { children: React.ReactNode; compact?: boolean }) {
+  return (
+    <div
+      style={{
+        background: "rgba(239,68,68,0.08)",
+        border: "1px solid rgba(239,68,68,0.2)",
+        borderRadius: "0.25rem",
+        padding: compact ? "0.6rem 0.75rem" : "0.75rem 1rem",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "0.5rem",
+      }}
+    >
+      <Info size={compact ? 13 : 15} style={{ color: "#F87171", flexShrink: 0, marginTop: "0.1rem" }} />
+      <p style={{ fontSize: compact ? "0.72rem" : "0.78rem", color: "#F87171", lineHeight: 1.6 }}>
+        {children}
+      </p>
     </div>
   );
 }
@@ -199,35 +420,24 @@ function CheckoutContent() {
 function Field({
   label,
   error,
-  full,
   children,
 }: {
   label: string;
   error?: string;
-  full?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ gridColumn: full ? "1 / -1" : undefined }}>
-      <label
-        style={{
-          display: "block",
-          color: "rgba(255,255,255,0.5)",
-          fontSize: "0.7rem",
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          marginBottom: "0.4rem",
-        }}
-      >
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+      <label style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
         {label}
       </label>
       {children}
-      {error && (
-        <p style={{ color: "#F87171", fontSize: "0.72rem", marginTop: "0.25rem" }}>{error}</p>
-      )}
+      {error && <p style={{ color: "#F87171", fontSize: "0.72rem" }}>{error}</p>}
     </div>
   );
 }
+
+/* ── Styles ─────────────────────────────────────────────── */
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -240,6 +450,16 @@ const inputStyle: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
   boxSizing: "border-box",
 };
+
+const sectionLabelStyle: React.CSSProperties = {
+  color: "rgba(255,255,255,0.5)",
+  fontSize: "0.65rem",
+  letterSpacing: "0.2em",
+  textTransform: "uppercase",
+  marginBottom: "1.5rem",
+};
+
+/* ── Page export ────────────────────────────────────────── */
 
 export default function CheckoutPage() {
   return (

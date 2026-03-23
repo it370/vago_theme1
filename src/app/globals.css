@@ -128,6 +128,17 @@ body.vago-revealed {
   gap: 4rem;
   align-items: start;
 }
+/* Sidebar — visible on desktop, hidden on mobile */
+.r-checkout-sidebar { display: block; }
+/* Mobile summary block — hidden on desktop */
+.r-checkout-mobile-summary { display: block; }
+/* Mobile CTA — hidden on desktop */
+.r-checkout-mobile-cta { display: block; }
+
+/* Spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
 /* Form fields — 2-col on desktop, 1-col on mobile */
 .r-form-grid {
@@ -176,6 +187,9 @@ body.vago-revealed {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+  .r-checkout-sidebar { display: none; }
+  .r-checkout-mobile-summary { display: block; }
+  .r-checkout-mobile-cta { display: block; }
 
   .r-form-grid {
     grid-template-columns: 1fr;
@@ -195,6 +209,8 @@ body.vago-revealed {
   .r-mobile-only {
     display: none !important;
   }
+  .r-checkout-mobile-summary { display: none; }
+  .r-checkout-mobile-cta { display: none; }
 
   /* Hide bottom nav on desktop — top nav handles navigation */
   .r-bottom-nav {

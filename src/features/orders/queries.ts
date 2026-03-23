@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiService } from "@/shared/services/api";
 import { useAuthStore } from "@/features/auth/store";
 import type { Order, PlaceOrderBody } from "@/shared/types";
+import { cartKeys } from "@/features/cart/queries";
 
 export const orderKeys = {
   all: ["orders"] as const,
@@ -31,7 +32,10 @@ export function usePlaceOrder() {
   return useMutation({
     mutationFn: (body: PlaceOrderBody) =>
       ApiService.post<Order>("/api/orders", { auth: true, body }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: orderKeys.all }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: orderKeys.all });
+      qc.invalidateQueries({ queryKey: cartKeys.all });
+    },
   });
 }
 
