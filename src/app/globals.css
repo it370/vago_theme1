@@ -267,6 +267,15 @@ body.vago-revealed {
   }
 }
 
+/* ===== HOT DEALS SCROLL STRIP ===== */
+.hot-deals-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hot-deals-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 /* ===== SMALL MOBILE (< 480px) ===== */
 @media (max-width: 480px) {
   /* Product grid: 2-col on small mobile (portrait cards look great at 2) */

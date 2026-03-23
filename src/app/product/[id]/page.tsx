@@ -3,16 +3,19 @@
 import { use, useState } from "react";
 import Link from "next/link";
 import { useProduct, useProducts } from "@/features/products/queries";
+import { useNewArrivals } from "@/features/home/queries";
 import { useAddToCart } from "@/features/cart/queries";
 import { useToggleWishlist, useWishlistProductIds } from "@/features/wishlist/queries";
 import { useAuthStore } from "@/features/auth/store";
 import { ImageGallery } from "@/shared/components/ImageGallery";
 import { ProductGrid } from "@/shared/components/ProductGrid";
+import { AppImage } from "@/shared/components/AppImage";
+import { ProductWishlistButton } from "@/shared/components/ProductWishlistButton";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { formatPrice } from "@/features/products/normalize";
 import { useRouter } from "next/navigation";
-import { Heart, ShoppingBag, Check } from "lucide-react";
+import { Heart, ShoppingBag, Check, Zap } from "lucide-react";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -35,6 +38,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     enabled: !!product?.categoryId,
   });
   const similarProducts = categoryProducts?.filter((p) => p.id !== id).slice(0, 8);
+
+  const { data: newArrivals } = useNewArrivals();
+  // Hot Deals ad strip — data source is swappable; currently new arrivals
+  const hotDeals = newArrivals?.products?.slice(0, 10) ?? [];
 
   const effectivePrice = product?.salePrice ?? product?.price ?? 0;
   const hasDiscount = !!product?.salePrice && product.salePrice < (product?.price ?? 0);
@@ -351,6 +358,216 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               skeletonCount={4}
               emptyMessage="No similar products found."
             />
+          </div>
+        </section>
+      )}
+
+      {/* Hot Deals — featured ad strip */}
+      {hotDeals.length > 0 && (
+        <section style={{ position: "relative", overflow: "hidden", background: "#0E0C09", padding: "5rem 0 4rem" }}>
+          {/* Gold aurora — bleeds from top centre */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "90%",
+              height: "260px",
+              background:
+                "radial-gradient(ellipse at 50% 0%, rgba(201,167,112,0.13) 0%, transparent 70%)",
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Ghost watermark */}
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontFamily: "'Playfair Display', serif",
+              fontSize: "clamp(5rem, 14vw, 11rem)",
+              fontWeight: 700,
+              color: "rgba(201,167,112,0.038)",
+              whiteSpace: "nowrap",
+              pointerEvents: "none",
+              userSelect: "none",
+              letterSpacing: "0.06em",
+            }}
+          >
+            HOT DEALS
+          </div>
+
+          {/* Bottom fade */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "3rem",
+              background: "linear-gradient(to bottom, transparent, rgba(28,28,30,0.4))",
+              pointerEvents: "none",
+            }}
+          />
+
+          <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "0 1.5rem", position: "relative", zIndex: 1 }}>
+            {/* Left-aligned editorial header */}
+            <div style={{ marginBottom: "2.75rem" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem", marginBottom: "0.9rem" }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                    background: "rgba(201,167,112,0.1)",
+                    border: "1px solid rgba(201,167,112,0.35)",
+                    color: "#C9A770",
+                    fontSize: "0.58rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    padding: "0.28rem 0.75rem",
+                    borderRadius: "2px",
+                  }}
+                >
+                  <Zap size={9} strokeWidth={2.5} />
+                  Featured Picks
+                </span>
+                <Link
+                  href="/new-arrivals"
+                  style={{
+                    color: "rgba(201,167,112,0.65)",
+                    fontSize: "0.78rem",
+                    textDecoration: "none",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    borderBottom: "1px solid rgba(201,167,112,0.2)",
+                    paddingBottom: "0.15rem",
+                  }}
+                >
+                  View All →
+                </Link>
+              </div>
+              <h2
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+                  fontWeight: 600,
+                  color: "#F0F0F0",
+                  lineHeight: 1.15,
+                  marginBottom: "0.85rem",
+                }}
+              >
+                Hot Deals
+              </h2>
+              {/* Gold rule — left-anchored below heading */}
+              <div style={{ width: "2.5rem", height: "1px", background: "linear-gradient(90deg, #C9A770, transparent)" }} />
+            </div>
+
+            {/* Horizontal scroll track */}
+            <div
+              className="hot-deals-scroll"
+              style={{
+                display: "flex",
+                gap: "1rem",
+                overflowX: "auto",
+                paddingBottom: "0.5rem",
+                scrollbarWidth: "none",
+              }}
+            >
+              {hotDeals.map((deal) => {
+                const dealImg = deal.images?.[0] ?? "";
+                const dealPrice = deal.salePrice ?? deal.price;
+                const dealHasDiscount = !!deal.salePrice && deal.salePrice < deal.price;
+                return (
+                  <Link
+                    key={deal.id}
+                    href={`/product/${deal.id}`}
+                    style={{ textDecoration: "none", color: "inherit", flexShrink: 0, width: "160px" }}
+                  >
+                    {/* Image */}
+                    <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        background: "#242426",
+                        aspectRatio: "3/4",
+                        marginBottom: "0.6rem",
+                        border: "1px solid rgba(255,255,255,0.04)",
+                      }}
+                    >
+                      {dealImg ? (
+                        <AppImage
+                          src={dealImg}
+                          alt={deal.name}
+                          fill
+                          sizes="160px"
+                          className="product-img"
+                          objectFit="cover"
+                        />
+                      ) : (
+                        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.65rem" }}>No image</span>
+                        </div>
+                      )}
+
+                      {dealHasDiscount && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "0.5rem",
+                            left: "0.5rem",
+                            background: "#C9A770",
+                            color: "#1C1C1E",
+                            fontSize: "0.55rem",
+                            fontWeight: 700,
+                            padding: "0.15rem 0.4rem",
+                            letterSpacing: "0.08em",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          SALE
+                        </div>
+                      )}
+
+                      <ProductWishlistButton productId={deal.id} size="sm" />
+                    </div>
+
+                    {/* Info */}
+                    <p
+                      style={{
+                        fontFamily: "'Playfair Display', serif",
+                        fontSize: "0.78rem",
+                        fontWeight: 500,
+                        color: "#F0F0F0",
+                        marginBottom: "0.25rem",
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {deal.name}
+                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      <span style={{ color: "#C9A770", fontSize: "0.78rem", fontWeight: 600 }}>
+                        {formatPrice(dealPrice)}
+                      </span>
+                      {dealHasDiscount && (
+                        <span style={{ color: "rgba(255,255,255,0.28)", fontSize: "0.68rem", textDecoration: "line-through" }}>
+                          {formatPrice(deal.price)}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+
           </div>
         </section>
       )}
