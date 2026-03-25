@@ -15,7 +15,7 @@ import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { formatPrice } from "@/features/products/normalize";
 import { useRouter } from "next/navigation";
-import { Heart, ShoppingBag, Check, Zap } from "lucide-react";
+import { Heart, ShoppingBag, Check, Zap, Users } from "lucide-react";
 import { theme } from "@/shared/constants/theme";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -372,6 +372,32 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               <Heart size={16} fill={isWishlisted ? theme.accent : "none"} />
               {isWishlisted ? "Saved to Wishlist" : "Save to Wishlist"}
             </button>
+
+            {/* Bulk pricing notice */}
+            <div style={{
+              marginTop: "1.25rem",
+              padding: "0.85rem 1rem",
+              background: "rgba(201,167,112,0.06)",
+              border: "1px solid rgba(201,167,112,0.2)",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "0.6rem",
+            }}>
+              <Users size={14} style={{ color: theme.accent, flexShrink: 0, marginTop: "0.1rem" }} />
+              <p style={{ fontSize: "0.76rem", color: theme.fgMuted, lineHeight: 1.6, margin: 0 }}>
+                <span style={{ color: theme.fg, fontWeight: 600 }}>Prices shown are per unit / per set.</span>
+                {" "}For bulk or wholesale orders, please{" "}
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: theme.accent, textDecoration: "none", fontWeight: 500, borderBottom: "1px solid rgba(201,167,112,0.4)", paddingBottom: "0.05rem" }}
+                >
+                  contact the seller
+                </a>
+                {" "}for a custom quote.
+              </p>
+            </div>
 
             {/* Accordion */}
             <div style={{ marginTop: "2rem", borderTop: `1px solid ${theme.border}` }}>
