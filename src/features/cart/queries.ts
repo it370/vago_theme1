@@ -31,6 +31,7 @@ export function useAddToCart() {
       quantity: number;
       selectedSize?: string;
       selectedColor?: string;
+      selectedPack?: string;
     }) => ApiService.post("/api/cart", { auth: true, body }),
     onSuccess: () => qc.invalidateQueries({ queryKey: cartKeys.all }),
   });

@@ -118,6 +118,9 @@ function CartContent() {
                   {item.selectedColor && (
                     <p style={{ color: theme.fgMuted, fontSize: "0.75rem" }}>Colour: {item.selectedColor}</p>
                   )}
+                  {item.selectedPack && (
+                    <p style={{ color: theme.fgMuted, fontSize: "0.75rem" }}>Pack: {item.selectedPack}</p>
+                  )}
 
                   <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
                     {/* Qty control */}

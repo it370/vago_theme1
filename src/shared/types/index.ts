@@ -1,3 +1,10 @@
+export interface PackOption {
+  label: string;
+  price: number;
+  salePrice?: number;
+  stockQty?: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -17,6 +24,7 @@ export interface Product {
   length?: string;
   pattern?: string;
   createdAt: string;
+  packOptions?: PackOption[];
 }
 
 export interface Category {
@@ -44,6 +52,7 @@ export interface CartItem {
   quantity: number;
   selectedSize?: string;
   selectedColor?: string;
+  selectedPack?: string;
   product?: Product;
   unitPrice?: number;
   originalUnitPrice?: number;
@@ -79,6 +88,7 @@ export interface OrderItem {
   priceAtPurchase: number;
   selectedSize?: string;
   selectedColor?: string;
+  selectedPack?: string;
   productSnapshot: Record<string, unknown>;
 }
 
@@ -138,6 +148,7 @@ export interface PlaceOrderBody {
     priceAtPurchase: number;
     selectedSize?: string;
     selectedColor?: string;
+    selectedPack?: string;
     productSnapshot?: Record<string, unknown> | null;
   }[];
   totalAmount: number;

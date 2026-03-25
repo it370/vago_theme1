@@ -115,6 +115,7 @@ function CheckoutContent() {
           priceAtPurchase: item.unitPrice ?? 0,
           selectedSize: item.selectedSize,
           selectedColor: item.selectedColor,
+          selectedPack: item.selectedPack,
           productSnapshot: item.product
             ? (item.product as unknown as Record<string, unknown>)
             : null,

@@ -6,6 +6,9 @@ export function normalizeProduct(p: Product): Product {
     images: Array.isArray(p.images) ? p.images.filter(Boolean) : [],
     sizes: Array.isArray(p.sizes) ? p.sizes.filter(Boolean) : [],
     colors: Array.isArray(p.colors) ? p.colors.filter(Boolean) : [],
+    packOptions: Array.isArray(p.packOptions)
+      ? p.packOptions.filter((o) => o && o.label && typeof o.price === "number")
+      : undefined,
   };
 }
 

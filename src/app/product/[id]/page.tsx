@@ -26,6 +26,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedPack, setSelectedPack] = useState<string | null>(null);
   const [addedToCart, setAddedToCart] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
@@ -44,14 +45,36 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   // Hot Deals ad strip — data source is swappable; currently new arrivals
   const hotDeals = newArrivals?.products?.slice(0, 10) ?? [];
 
-  const effectivePrice = product?.salePrice ?? product?.price ?? 0;
-  const hasDiscount = !!product?.salePrice && product.salePrice < (product?.price ?? 0);
+  const hasPacks = (product?.packOptions?.length ?? 0) > 0;
+  const activePack = hasPacks
+    ? product!.packOptions!.find((o) => o.label === selectedPack) ?? null
+    : null;
+  const cheapestPack = hasPacks
+    ? product!.packOptions!.reduce((a, b) => (b.price < a.price ? b : a))
+    : null;
+
+  const effectivePrice = activePack
+    ? (activePack.salePrice ?? activePack.price)
+    : (product?.salePrice ?? product?.price ?? 0);
+  const hasDiscount = activePack
+    ? !!activePack.salePrice && activePack.salePrice < activePack.price
+    : !!product?.salePrice && product.salePrice < (product?.price ?? 0);
+  const basePrice = activePack ? activePack.price : (product?.price ?? 0);
+
+  const effectiveStock = activePack?.stockQty ?? product?.stockQty ?? 0;
 
   function handleAddToCart() {
     if (!user) { router.push("/login"); return; }
     if (!product) return;
+    if (hasPacks && !selectedPack) return;
     addToCart.mutate(
-      { productId: product.id, quantity: 1, selectedSize: selectedSize ?? undefined, selectedColor: selectedColor ?? undefined },
+      {
+        productId: product.id,
+        quantity: 1,
+        selectedSize: selectedSize ?? undefined,
+        selectedColor: selectedColor ?? undefined,
+        selectedPack: selectedPack ?? undefined,
+      },
       {
         onSuccess: () => {
           setAddedToCart(true);
@@ -141,17 +164,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Price */}
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem", paddingBottom: "1.5rem", borderBottom: `1px solid ${theme.border}` }}>
-              <span style={{ color: theme.accent, fontSize: "1.3rem", fontWeight: 600 }}>
-                {formatPrice(effectivePrice)}
-              </span>
-              {hasDiscount && (
+              {hasPacks && !selectedPack ? (
+                <span style={{ color: theme.accent, fontSize: "1.3rem", fontWeight: 600 }}>
+                  from {formatPrice(cheapestPack!.price)}
+                </span>
+              ) : (
                 <>
-                  <span style={{ color: theme.fgFaint, fontSize: "1rem", textDecoration: "line-through" }}>
-                    {formatPrice(product.price)}
+                  <span style={{ color: theme.accent, fontSize: "1.3rem", fontWeight: 600 }}>
+                    {formatPrice(effectivePrice)}
                   </span>
-                  <span style={{ background: "rgba(201,167,112,0.15)", color: theme.accent, fontSize: "0.65rem", fontWeight: 600, padding: "0.2rem 0.6rem", letterSpacing: "0.1em" }}>
-                    SALE
-                  </span>
+                  {hasDiscount && (
+                    <>
+                      <span style={{ color: theme.fgFaint, fontSize: "1rem", textDecoration: "line-through" }}>
+                        {formatPrice(basePrice)}
+                      </span>
+                      <span style={{ background: "rgba(201,167,112,0.15)", color: theme.accent, fontSize: "0.65rem", fontWeight: 600, padding: "0.2rem 0.6rem", letterSpacing: "0.1em" }}>
+                        SALE
+                      </span>
+                    </>
+                  )}
                 </>
               )}
             </div>
@@ -161,6 +192,53 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               <p style={{ color: theme.fgMuted, fontSize: "0.9rem", lineHeight: 1.8, marginBottom: "2rem" }}>
                 {product.description}
               </p>
+            )}
+
+            {/* Pack Options */}
+            {hasPacks && (
+              <div style={{ marginBottom: "1.75rem" }}>
+                <p style={{ fontSize: "0.75rem", color: theme.fgMuted, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                  Pack Size{selectedPack ? <span style={{ color: theme.fg, textTransform: "none", letterSpacing: 0 }}>: {selectedPack}</span> : <span style={{ color: theme.accent }}> — select to continue</span>}
+                </p>
+                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                  {product.packOptions!.map((pack) => {
+                    const isSelected = selectedPack === pack.label;
+                    const packDisplayPrice = pack.salePrice ?? pack.price;
+                    const packHasSale = !!pack.salePrice && pack.salePrice < pack.price;
+                    return (
+                      <button
+                        key={pack.label}
+                        onClick={() => setSelectedPack(pack.label)}
+                        style={{
+                          padding: "0.45rem 1rem",
+                          border: `1px solid ${isSelected ? theme.accent : theme.borderStrong}`,
+                          background: isSelected ? "rgba(201,167,112,0.1)" : "transparent",
+                          color: isSelected ? theme.accent : theme.fgMuted,
+                          fontSize: "0.8rem",
+                          cursor: "pointer",
+                          fontFamily: "'Inter', sans-serif",
+                          transition: "all 0.2s",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                          gap: "0.1rem",
+                          fontWeight: isSelected ? 600 : 400,
+                        }}
+                      >
+                        <span>{pack.label}</span>
+                        <span style={{ fontSize: "0.7rem", color: isSelected ? theme.accent : theme.fgSubtle }}>
+                          {formatPrice(packDisplayPrice)}
+                          {packHasSale && (
+                            <span style={{ marginLeft: "0.35rem", textDecoration: "line-through", opacity: 0.6 }}>
+                              {formatPrice(pack.price)}
+                            </span>
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             )}
 
             {/* Colors */}
@@ -224,39 +302,52 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             )}
 
             {/* Stock */}
-            {product.stockQty <= 5 && product.stockQty > 0 && (
+            {effectiveStock <= 5 && effectiveStock > 0 && (
               <p style={{ color: theme.accent, fontSize: "0.8rem", marginBottom: "1rem" }}>
-                Only {product.stockQty} left in stock
+                Only {effectiveStock} left in stock
               </p>
             )}
 
             {/* CTA */}
-            <button
-              onClick={handleAddToCart}
-              disabled={addToCart.isPending || product.stockQty === 0}
-              style={{
-                width: "100%",
-                background: addedToCart ? "#4ADE80" : theme.accent,
-                color: theme.onAccent,
-                fontWeight: 700,
-                fontSize: "0.85rem",
-                padding: "1rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                border: "none",
-                cursor: product.stockQty === 0 ? "not-allowed" : "pointer",
-                marginBottom: "0.75rem",
-                transition: "background 0.2s",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "0.5rem",
-                fontFamily: "'Inter', sans-serif",
-                opacity: product.stockQty === 0 ? 0.5 : 1,
-              }}
-            >
-              {addedToCart ? <><Check size={16} /> Added to Bag</> : product.stockQty === 0 ? "Out of Stock" : <><ShoppingBag size={16} /> Add to Bag</>}
-            </button>
+            {(() => {
+              const packRequired = hasPacks && !selectedPack;
+              const outOfStock = effectiveStock === 0;
+              const disabled = addToCart.isPending || outOfStock || packRequired;
+              return (
+                <button
+                  onClick={handleAddToCart}
+                  disabled={disabled}
+                  style={{
+                    width: "100%",
+                    background: addedToCart ? "#4ADE80" : packRequired ? theme.elevated : theme.accent,
+                    color: packRequired ? theme.fgMuted : theme.onAccent,
+                    fontWeight: 700,
+                    fontSize: "0.85rem",
+                    padding: "1rem",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    border: packRequired ? `1px solid ${theme.borderStrong}` : "none",
+                    cursor: disabled ? "not-allowed" : "pointer",
+                    marginBottom: "0.75rem",
+                    transition: "background 0.2s",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                    fontFamily: "'Inter', sans-serif",
+                    opacity: outOfStock ? 0.5 : 1,
+                  }}
+                >
+                  {addedToCart
+                    ? <><Check size={16} /> Added to Bag</>
+                    : outOfStock
+                      ? "Out of Stock"
+                      : packRequired
+                        ? "Select a Pack to Continue"
+                        : <><ShoppingBag size={16} /> Add to Bag</>}
+                </button>
+              );
+            })()}
 
             <button
               onClick={handleWishlist}
