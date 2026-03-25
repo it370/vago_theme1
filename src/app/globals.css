@@ -111,6 +111,14 @@ body.vago-revealed {
   margin-bottom: 5rem;
 }
 
+/* Order detail — items + sidebar on desktop */
+.r-order-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 20rem;
+  gap: 1.25rem;
+  align-items: start;
+}
+
 /* Cart — content + sidebar on desktop */
 .r-cart-grid {
   display: grid;
@@ -197,6 +205,11 @@ body.vago-revealed {
   .r-pdp-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .r-order-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .r-cart-grid {
