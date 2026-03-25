@@ -107,4 +107,4 @@ export type ThemeTokens = typeof lightTheme | typeof darkTheme;
  * Active palette for the app (`import { theme } from "…"`).
  * Set to `darkTheme` to restore the original dark UI everywhere that uses `theme`.
  */
-export const theme: ThemeTokens = darkTheme;
+export const theme: ThemeTokens = lightTheme;
