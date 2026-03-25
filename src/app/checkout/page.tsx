@@ -15,6 +15,7 @@ import { BottomNav } from "@/shared/components/BottomNav";
 import { AppImage } from "@/shared/components/AppImage";
 import { formatPrice } from "@/features/products/normalize";
 import type { CartItem, CartSummary } from "@/shared/types";
+import { theme } from "@/shared/constants/theme";
 
 /* ── Constants ─────────────────────────────────────────── */
 
@@ -129,10 +130,10 @@ function CheckoutContent() {
     <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 8rem" }}>
       {/* Page heading */}
       <div style={{ marginBottom: "2.5rem" }}>
-        <p style={{ color: "#C9A770", fontSize: "0.65rem", letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+        <p style={{ color: theme.accent, fontSize: "0.65rem", letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
           Final Step
         </p>
-        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 600, color: "#F0F0F0" }}>
+        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 600, color: theme.fg }}>
           Checkout
         </h1>
       </div>
@@ -150,8 +151,8 @@ function CheckoutContent() {
 
             {/* Phone with +91 prefix */}
             <Field label="Phone Number" error={errors.phone?.message}>
-              <div style={{ display: "flex", border: "1px solid rgba(255,255,255,0.1)", overflow: "hidden" }}>
-                <span style={{ padding: "0.65rem 0.75rem", fontSize: "0.88rem", color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.04)", borderRight: "1px solid rgba(255,255,255,0.1)", whiteSpace: "nowrap" }}>
+              <div style={{ display: "flex", border: `1px solid ${theme.inputBorder}`, overflow: "hidden", borderRadius: "2px" }}>
+                <span style={{ padding: "0.65rem 0.75rem", fontSize: "0.88rem", color: theme.fgMuted, background: theme.elevated, borderRight: `1px solid ${theme.inputBorder}`, whiteSpace: "nowrap" }}>
                   +91
                 </span>
                 <input
@@ -203,7 +204,7 @@ function CheckoutContent() {
             {/* Save address checkbox */}
             <label style={{ display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer" }}>
               <input type="checkbox" {...register("saveAddress")} style={{ width: "1rem", height: "1rem", accentColor: "#C9A770" }} />
-              <span style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.5)" }}>
+              <span style={{ fontSize: "0.82rem", color: theme.fgMuted }}>
                 Save address for next time
               </span>
             </label>
@@ -235,7 +236,7 @@ function CheckoutContent() {
 
         {/* ── Desktop sticky sidebar ────────────────────── */}
         <div className="r-checkout-sidebar">
-          <div style={{ background: "#242426", padding: "1.75rem", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+          <div style={{ background: theme.surface, padding: "1.75rem", display: "flex", flexDirection: "column", gap: "1.25rem", border: `1px solid ${theme.border}`, boxShadow: "0 1px 3px rgba(20,20,19,0.05)" }}>
             <p style={sectionLabelStyle}>Your Order</p>
 
             <OrderSummaryItems items={items} summary={summary} total={total} />
@@ -273,7 +274,7 @@ function OrderSummaryItems({
         <div key={item.id} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           {/* Thumbnail */}
           {item.product?.images?.[0] ? (
-            <div style={{ position: "relative", width: "3rem", height: "3rem", flexShrink: 0, background: "#2C2C2E" }}>
+            <div style={{ position: "relative", width: "3rem", height: "3rem", flexShrink: 0, background: theme.imageBg }}>
               <AppImage
                 src={item.product.images[0]}
                 alt={item.product.name}
@@ -283,38 +284,38 @@ function OrderSummaryItems({
               />
             </div>
           ) : (
-            <div style={{ width: "3rem", height: "3rem", flexShrink: 0, background: "#2C2C2E" }} />
+            <div style={{ width: "3rem", height: "3rem", flexShrink: 0, background: theme.imageBg }} />
           )}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: "0.82rem", color: "#F0F0F0", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+            <p style={{ fontSize: "0.82rem", color: theme.fg, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
               {item.product?.name ?? "Product"}
             </p>
-            <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)" }}>Qty: {item.quantity}</p>
+            <p style={{ fontSize: "0.72rem", color: theme.fgSubtle }}>Qty: {item.quantity}</p>
           </div>
-          <p style={{ fontSize: "0.82rem", color: "#C9A770", fontWeight: 600, flexShrink: 0 }}>
+          <p style={{ fontSize: "0.82rem", color: theme.accent, fontWeight: 600, flexShrink: 0 }}>
             {item.lineTotal !== undefined ? formatPrice(item.lineTotal) : "—"}
           </p>
         </div>
       ))}
 
       {summary && (
-        <div style={{ paddingTop: "0.75rem", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+        <div style={{ paddingTop: "0.75rem", borderTop: `1px solid ${theme.border}`, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem" }}>
-            <span style={{ color: "rgba(255,255,255,0.4)" }}>Subtotal</span>
-            <span style={{ color: "#F0F0F0" }}>{formatPrice(summary.subtotalOriginal)}</span>
+            <span style={{ color: theme.fgMuted }}>Subtotal</span>
+            <span style={{ color: theme.fg }}>{formatPrice(summary.subtotalOriginal)}</span>
           </div>
           {summary.totalDiscount > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem" }}>
-              <span style={{ color: "rgba(255,255,255,0.4)" }}>Savings</span>
+              <span style={{ color: theme.fgMuted }}>Savings</span>
               <span style={{ color: "#4ADE80" }}>-{formatPrice(summary.totalDiscount)}</span>
             </div>
           )}
         </div>
       )}
 
-      <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.75rem", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-        <span style={{ fontWeight: 600, color: "#F0F0F0" }}>Total</span>
-        <span style={{ fontWeight: 700, fontSize: "1rem", color: "#C9A770" }}>{formatPrice(total)}</span>
+      <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.75rem", borderTop: `1px solid ${theme.border}` }}>
+        <span style={{ fontWeight: 600, color: theme.fg }}>Total</span>
+        <span style={{ fontWeight: 700, fontSize: "1rem", color: theme.accent }}>{formatPrice(total)}</span>
       </div>
     </div>
   );
@@ -335,8 +336,8 @@ function PlaceOrderButton({
       disabled={isPending || cartLoading || itemCount === 0}
       style={{
         width: "100%",
-        background: "#C9A770",
-        color: "#1C1C1E",
+        background: theme.accent,
+        color: theme.onAccent,
         fontWeight: 700,
         fontSize: "0.78rem",
         padding: "0.9rem",
@@ -359,8 +360,8 @@ function PlaceOrderButton({
             style={{
               width: "1rem",
               height: "1rem",
-              border: "2px solid rgba(28,28,30,0.3)",
-              borderTopColor: "#1C1C1E",
+              border: `2px solid rgba(28,28,30,0.2)`,
+              borderTopColor: theme.onAccent,
               borderRadius: "50%",
               display: "inline-block",
               animation: "spin 0.7s linear infinite",
@@ -428,7 +429,7 @@ function Field({
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-      <label style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+      <label style={{ color: theme.fgMuted, fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
         {label}
       </label>
       {children}
@@ -441,9 +442,9 @@ function Field({
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  color: "#fff",
+  background: theme.inputBg,
+  border: `1px solid ${theme.inputBorder}`,
+  color: theme.fg,
   padding: "0.65rem 0.9rem",
   fontSize: "0.88rem",
   outline: "none",
@@ -452,7 +453,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const sectionLabelStyle: React.CSSProperties = {
-  color: "rgba(255,255,255,0.5)",
+  color: theme.fgMuted,
   fontSize: "0.65rem",
   letterSpacing: "0.2em",
   textTransform: "uppercase",
@@ -464,7 +465,7 @@ const sectionLabelStyle: React.CSSProperties = {
 export default function CheckoutPage() {
   return (
     <AuthGuard>
-      <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+      <main style={{ background: theme.bg, minHeight: "100vh" }} className="animate-page-in">
         <CheckoutContent />
         <div className="r-bottom-spacer" />
         <BottomNav />

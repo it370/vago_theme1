@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { theme } from "@/shared/constants/theme";
 
 interface PaginationProps {
   currentPage: number;
@@ -46,7 +47,7 @@ export function Pagination({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    border: "1px solid rgba(255,255,255,0.1)",
+    border: `1px solid ${theme.borderStrong}`,
     background: "none",
     cursor: "pointer",
     fontFamily: "'Inter', sans-serif",
@@ -58,11 +59,11 @@ export function Pagination({
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
       {/* Count label */}
-      <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.3)" }}>
+      <p style={{ fontSize: "0.75rem", color: theme.fgFaint }}>
         Showing{" "}
-        <span style={{ color: "rgba(255,255,255,0.6)" }}>{start}–{end}</span>
+        <span style={{ color: theme.fgMuted }}>{start}–{end}</span>
         {" "}of{" "}
-        <span style={{ color: "rgba(255,255,255,0.6)" }}>{totalItems}</span> pieces
+        <span style={{ color: theme.fgMuted }}>{totalItems}</span> pieces
       </p>
 
       {/* Controls */}
@@ -73,7 +74,7 @@ export function Pagination({
           disabled={currentPage === 1}
           style={{
             ...btnBase,
-            color: currentPage === 1 ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.5)",
+            color: currentPage === 1 ? theme.fgFaint : theme.fgMuted,
             cursor: currentPage === 1 ? "not-allowed" : "pointer",
             opacity: currentPage === 1 ? 0.4 : 1,
           }}
@@ -86,7 +87,7 @@ export function Pagination({
           p === "..." ? (
             <span
               key={`ellipsis-${i}`}
-              style={{ width: "2.25rem", height: "2.25rem", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.25)", fontSize: "0.82rem" }}
+              style={{ width: "2.25rem", height: "2.25rem", display: "flex", alignItems: "center", justifyContent: "center", color: theme.fgFaint, fontSize: "0.82rem" }}
             >
               …
             </span>
@@ -96,9 +97,9 @@ export function Pagination({
               onClick={() => onPageChange(p as number)}
               style={{
                 ...btnBase,
-                background: p === currentPage ? "#C9A770" : "none",
-                color: p === currentPage ? "#1C1C1E" : "rgba(255,255,255,0.5)",
-                borderColor: p === currentPage ? "#C9A770" : "rgba(255,255,255,0.1)",
+                background: p === currentPage ? theme.accent : "none",
+                color: p === currentPage ? theme.onAccent : theme.fgMuted,
+                borderColor: p === currentPage ? theme.accent : theme.borderStrong,
                 fontWeight: p === currentPage ? 700 : 400,
               }}
             >
@@ -113,7 +114,7 @@ export function Pagination({
           disabled={currentPage === totalPages}
           style={{
             ...btnBase,
-            color: currentPage === totalPages ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.5)",
+            color: currentPage === totalPages ? theme.fgFaint : theme.fgMuted,
             cursor: currentPage === totalPages ? "not-allowed" : "pointer",
             opacity: currentPage === totalPages ? 0.4 : 1,
           }}

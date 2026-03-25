@@ -1,5 +1,7 @@
 "use client";
 
+import { theme } from "@/shared/constants/theme";
+
 interface FilterPanelProps {
   categories: Array<{ id: string; name: string }>;
   activeId: string | null;
@@ -18,8 +20,8 @@ export function FilterPanel({ categories, activeId, onSelect }: FilterPanelProps
             key={item.id ?? "all"}
             onClick={() => onSelect(item.id)}
             style={{
-              border: `1px solid ${isActive ? "#C9A770" : "rgba(255,255,255,0.15)"}`,
-              color: isActive ? "#C9A770" : "rgba(255,255,255,0.45)",
+              border: `1px solid ${isActive ? theme.accent : theme.borderStrong}`,
+              color: isActive ? theme.accent : theme.fgMuted,
               padding: "0.3rem 0.85rem",
               fontSize: "0.75rem",
               cursor: "pointer",

@@ -7,6 +7,7 @@ import { Search, ShoppingBag, Heart, User } from "lucide-react";
 import { useCartCount } from "@/features/cart/queries";
 import { useAuthStore } from "@/features/auth/store";
 import { APP_NAME } from "@/shared/constants/app";
+import { theme } from "@/shared/constants/theme";
 
 export function DesktopHeader() {
   const cartCount = useCartCount();
@@ -29,8 +30,8 @@ export function DesktopHeader() {
       {/* Ticker bar */}
       <div
         style={{
-          background: "#C9A770",
-          color: "#1C1C1E",
+          background: theme.accent,
+          color: theme.onAccent,
           fontSize: "0.7rem",
           letterSpacing: "0.15em",
           padding: "0.45rem 0",
@@ -53,9 +54,9 @@ export function DesktopHeader() {
           position: "sticky",
           top: 0,
           zIndex: 50,
-          background: "rgba(28,28,30,0.95)",
+          background: theme.headerBg,
           backdropFilter: "blur(16px)",
-          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          borderBottom: `1px solid ${theme.border}`,
         }}
       >
         {/*
@@ -88,7 +89,7 @@ export function DesktopHeader() {
               fontFamily: "'Playfair Display', serif",
               fontSize: "1.4rem",
               letterSpacing: "0.3em",
-              color: "#C9A770",
+              color: theme.accent,
               fontWeight: 700,
               textDecoration: "none",
               whiteSpace: "nowrap",
@@ -123,8 +124,8 @@ export function DesktopHeader() {
                     position: "absolute",
                     top: "-6px",
                     right: "-6px",
-                    background: "#C9A770",
-                    color: "#1C1C1E",
+                    background: theme.accent,
+                    color: theme.onAccent,
                     fontSize: "0.58rem",
                     fontWeight: 700,
                     width: "1rem",
@@ -156,8 +157,8 @@ export function DesktopHeader() {
             onSubmit={handleSearch}
             style={{
               padding: "0.75rem 1.5rem",
-              borderTop: "1px solid rgba(255,255,255,0.07)",
-              background: "rgba(28,28,30,0.98)",
+              borderTop: `1px solid ${theme.border}`,
+              background: theme.surface,
               display: "flex",
               gap: "0.5rem",
             }}
@@ -170,9 +171,9 @@ export function DesktopHeader() {
               placeholder="Search products…"
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "#fff",
+                background: theme.inputBg,
+                border: `1px solid ${theme.inputBorder}`,
+                color: theme.fg,
                 padding: "0.6rem 1rem",
                 fontSize: "0.9rem",
                 outline: "none",
@@ -182,8 +183,8 @@ export function DesktopHeader() {
             <button
               type="submit"
               style={{
-                background: "#C9A770",
-                color: "#1C1C1E",
+                background: theme.accent,
+                color: theme.onAccent,
                 border: "none",
                 padding: "0.6rem 1.25rem",
                 fontSize: "0.75rem",
@@ -206,7 +207,7 @@ const iconBtnStyle: React.CSSProperties = {
   background: "none",
   border: "none",
   cursor: "pointer",
-  color: "rgba(255,255,255,0.55)",
+  color: theme.icon,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -220,16 +221,16 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
     <Link
       href={href}
       style={{
-        color: "rgba(255,255,255,0.6)",
+        color: theme.navLink,
         fontSize: "0.7rem",
         letterSpacing: "0.2em",
         textTransform: "uppercase",
         textDecoration: "none",
         transition: "color 0.2s",
       }}
-      onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#C9A770")}
+      onMouseEnter={(e) => ((e.target as HTMLElement).style.color = theme.accent)}
       onMouseLeave={(e) =>
-        ((e.target as HTMLElement).style.color = "rgba(255,255,255,0.6)")
+        ((e.target as HTMLElement).style.color = theme.navLink)
       }
     >
       {children}

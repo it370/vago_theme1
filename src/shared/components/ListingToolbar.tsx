@@ -1,6 +1,7 @@
 "use client";
 
 import { LayoutGrid, List } from "lucide-react";
+import { theme } from "@/shared/constants/theme";
 
 export type SortOption = { label: string; value: string };
 export type ViewMode = "grid" | "row";
@@ -54,9 +55,9 @@ export function ListingToolbar({
                   letterSpacing: "0.06em",
                   whiteSpace: "nowrap",
                   cursor: "pointer",
-                  border: `1px solid ${active ? "#C9A770" : "rgba(255,255,255,0.12)"}`,
-                  background: active ? "rgba(201,167,112,0.12)" : "transparent",
-                  color: active ? "#C9A770" : "rgba(255,255,255,0.5)",
+                  border: `1px solid ${active ? theme.accent : theme.borderStrong}`,
+                  background: active ? "rgba(201,167,112,0.14)" : "transparent",
+                  color: active ? theme.accent : theme.fgMuted,
                   borderRadius: "2px",
                   transition: "all 0.15s",
                   flexShrink: 0,
@@ -75,7 +76,7 @@ export function ListingToolbar({
           <span
             style={{
               fontSize: "0.72rem",
-              color: "rgba(255,255,255,0.28)",
+              color: theme.fgFaint,
               fontFamily: "'Inter', sans-serif",
               whiteSpace: "nowrap",
             }}
@@ -85,7 +86,7 @@ export function ListingToolbar({
         )}
 
         {/* Divider */}
-        <div style={{ width: "1px", height: "1.2rem", background: "rgba(255,255,255,0.1)" }} />
+        <div style={{ width: "1px", height: "1.2rem", background: theme.border }} />
 
         {/* Grid toggle */}
         <button
@@ -98,9 +99,9 @@ export function ListingToolbar({
             justifyContent: "center",
             width: "2rem",
             height: "2rem",
-            border: `1px solid ${view === "grid" ? "#C9A770" : "rgba(255,255,255,0.1)"}`,
-            background: view === "grid" ? "rgba(201,167,112,0.1)" : "transparent",
-            color: view === "grid" ? "#C9A770" : "rgba(255,255,255,0.4)",
+            border: `1px solid ${view === "grid" ? theme.accent : theme.borderStrong}`,
+            background: view === "grid" ? "rgba(201,167,112,0.12)" : "transparent",
+            color: view === "grid" ? theme.accent : theme.iconMuted,
             cursor: "pointer",
             borderRadius: "2px",
             transition: "all 0.15s",
@@ -120,9 +121,9 @@ export function ListingToolbar({
             justifyContent: "center",
             width: "2rem",
             height: "2rem",
-            border: `1px solid ${view === "row" ? "#C9A770" : "rgba(255,255,255,0.1)"}`,
-            background: view === "row" ? "rgba(201,167,112,0.1)" : "transparent",
-            color: view === "row" ? "#C9A770" : "rgba(255,255,255,0.4)",
+            border: `1px solid ${view === "row" ? theme.accent : theme.borderStrong}`,
+            background: view === "row" ? "rgba(201,167,112,0.12)" : "transparent",
+            color: view === "row" ? theme.accent : theme.iconMuted,
             cursor: "pointer",
             borderRadius: "2px",
             transition: "all 0.15s",

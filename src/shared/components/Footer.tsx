@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { APP_NAME, LEGAL_LINKS } from "@/shared/constants/app";
+import { theme } from "@/shared/constants/theme";
 
 export function Footer() {
   return (
     <footer
       style={{
-        background: "#1C1C1E",
-        borderTop: "1px solid rgba(255,255,255,0.06)",
+        background: theme.footerBg,
+        borderTop: "1px solid rgba(255,255,255,0.08)",
         padding: "4rem 1.5rem 3rem",
       }}
     >

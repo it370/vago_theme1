@@ -10,6 +10,14 @@ import type { ViewMode } from "@/shared/components/ListingToolbar";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { resolveCategoryIdForApi } from "@/shared/lib/categoryRoutes";
+import {
+  listingMainStyle,
+  crumbLinkStyle,
+  crumbSepStyle,
+  crumbCurrentStyle,
+  sectionEyebrowStyle,
+  pageHeadingStyle,
+} from "@/shared/lib/listingChrome";
 
 export default function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: segment } = use(params);
@@ -24,7 +32,7 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
   const category = categories?.find((c) => c.id === categoryIdForApi);
 
   return (
-    <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+    <main style={listingMainStyle} className="animate-page-in">
       <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 8rem" }}>
         {/* Breadcrumb */}
         <nav
@@ -36,40 +44,26 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
             fontSize: "0.8rem",
           }}
         >
-          <Link href="/home" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
+          <Link href="/home" style={crumbLinkStyle}>
             Home
           </Link>
-          <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-          <Link href="/categories" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
+          <span style={crumbSepStyle}>›</span>
+          <Link href="/categories" style={crumbLinkStyle}>
             Collections
           </Link>
-          <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-          <span style={{ color: "rgba(255,255,255,0.75)" }}>
+          <span style={crumbSepStyle}>›</span>
+          <span style={crumbCurrentStyle}>
             {category?.name ?? "Category"}
           </span>
         </nav>
 
         {/* Header */}
         <div style={{ marginBottom: "3rem" }}>
-          <p
-            style={{
-              color: "#C9A770",
-              fontSize: "0.65rem",
-              letterSpacing: "0.35em",
-              textTransform: "uppercase",
-              marginBottom: "0.5rem",
-            }}
-          >
+          <p style={sectionEyebrowStyle}>
             Category
           </p>
           <h1
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-              fontWeight: 600,
-              color: "#F0F0F0",
-              marginBottom: "0.4rem",
-            }}
+            style={{ ...pageHeadingStyle, marginBottom: "0.4rem" }}
           >
             {category?.name ?? "Collection"}
           </h1>

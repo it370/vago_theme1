@@ -5,6 +5,7 @@ import type { Product } from "@/shared/types";
 import { formatPrice } from "@/features/products/normalize";
 import { AppImage } from "./AppImage";
 import { ProductWishlistButton } from "./ProductWishlistButton";
+import { theme } from "@/shared/constants/theme";
 
 interface ProductRowCardProps {
   product: Product;
@@ -29,8 +30,8 @@ export function ProductRowCard({ product }: ProductRowCardProps) {
           width: "var(--row-card-img-w, 110px)",
           aspectRatio: "3/4",
           overflow: "hidden",
-          background: "#242426",
-          border: "1px solid rgba(255,255,255,0.04)",
+          background: theme.imageBg,
+          border: `1px solid ${theme.borderSoft}`,
         }}
       >
         {displayImage ? (
@@ -52,7 +53,7 @@ export function ProductRowCard({ product }: ProductRowCardProps) {
               justifyContent: "center",
             }}
           >
-            <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.65rem" }}>
+            <span style={{ color: theme.fgFaint, fontSize: "0.65rem" }}>
               No image
             </span>
           </div>
@@ -64,8 +65,8 @@ export function ProductRowCard({ product }: ProductRowCardProps) {
               position: "absolute",
               top: "0.4rem",
               left: "0.4rem",
-              background: "#C9A770",
-              color: "#1C1C1E",
+              background: theme.accent,
+              color: theme.onAccent,
               fontSize: "0.52rem",
               fontWeight: 700,
               padding: "0.12rem 0.35rem",
@@ -83,7 +84,7 @@ export function ProductRowCard({ product }: ProductRowCardProps) {
         {product.categoryName && (
           <p
             style={{
-              color: "#C9A770",
+              color: theme.accent,
               fontSize: "0.6rem",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
@@ -98,7 +99,7 @@ export function ProductRowCard({ product }: ProductRowCardProps) {
             fontFamily: "'Playfair Display', serif",
             fontSize: "clamp(0.88rem, 2vw, 1rem)",
             fontWeight: 500,
-            color: "#F0F0F0",
+            color: theme.fg,
             lineHeight: 1.3,
             overflow: "hidden",
             display: "-webkit-box",
@@ -113,7 +114,7 @@ export function ProductRowCard({ product }: ProductRowCardProps) {
           <p
             style={{
               fontSize: "0.75rem",
-              color: "rgba(255,255,255,0.35)",
+              color: theme.fgMuted,
               lineHeight: 1.6,
               overflow: "hidden",
               display: "-webkit-box",
@@ -126,13 +127,13 @@ export function ProductRowCard({ product }: ProductRowCardProps) {
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginTop: "0.25rem" }}>
-          <span style={{ color: "#C9A770", fontSize: "0.88rem", fontWeight: 600 }}>
+          <span style={{ color: theme.accent, fontSize: "0.88rem", fontWeight: 600 }}>
             {formatPrice(effectivePrice)}
           </span>
           {hasDiscount && (
             <span
               style={{
-                color: "rgba(255,255,255,0.28)",
+                color: theme.fgFaint,
                 fontSize: "0.75rem",
                 textDecoration: "line-through",
               }}

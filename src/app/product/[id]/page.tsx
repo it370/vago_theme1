@@ -16,6 +16,7 @@ import { BottomNav } from "@/shared/components/BottomNav";
 import { formatPrice } from "@/features/products/normalize";
 import { useRouter } from "next/navigation";
 import { Heart, ShoppingBag, Check, Zap } from "lucide-react";
+import { theme } from "@/shared/constants/theme";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -71,7 +72,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   if (isLoading) {
     return (
-      <main style={{ background: "#1C1C1E", minHeight: "100vh" }}>
+      <main style={{ background: theme.bg, minHeight: "100vh" }}>
         <div
           style={{
             maxWidth: "72rem",
@@ -82,10 +83,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             gap: "4rem",
           }}
         >
-          <div style={{ aspectRatio: "3/4", background: "#242426" }} className="animate-pulse" />
+          <div style={{ aspectRatio: "3/4", background: theme.skeleton }} className="animate-pulse" />
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             {[30, 60, 20, 80, 40].map((w, i) => (
-              <div key={i} style={{ height: "1rem", width: `${w}%`, background: "#242426" }} className="animate-pulse" />
+              <div key={i} style={{ height: "1rem", width: `${w}%`, background: theme.skeleton }} className="animate-pulse" />
             ))}
           </div>
         </div>
@@ -95,10 +96,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   if (!product) {
     return (
-      <main style={{ background: "#1C1C1E", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <main style={{ background: theme.bg, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center" }}>
-          <p style={{ color: "rgba(255,255,255,0.5)", marginBottom: "1rem" }}>Product not found.</p>
-          <Link href="/categories" style={{ color: "#C9A770", textDecoration: "none", fontSize: "0.85rem" }}>
+          <p style={{ color: theme.fgMuted, marginBottom: "1rem" }}>Product not found.</p>
+          <Link href="/categories" style={{ color: theme.accent, textDecoration: "none", fontSize: "0.85rem" }}>
             Back to Collections →
           </Link>
         </div>
@@ -113,15 +114,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   ];
 
   return (
-    <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+    <main style={{ background: theme.bg, minHeight: "100vh" }} className="animate-page-in">
       <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 4rem" }}>
         {/* Breadcrumb */}
         <nav style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "2.5rem", fontSize: "0.8rem", flexWrap: "wrap" }}>
-          <Link href="/home" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>Home</Link>
-          <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-          <Link href="/categories" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>Collections</Link>
-          <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-          <span style={{ color: "rgba(255,255,255,0.7)" }}>{product.name}</span>
+          <Link href="/home" style={{ color: theme.fgSubtle, textDecoration: "none" }}>Home</Link>
+          <span style={{ color: theme.fgFaint }}>›</span>
+          <Link href="/categories" style={{ color: theme.fgSubtle, textDecoration: "none" }}>Collections</Link>
+          <span style={{ color: theme.fgFaint }}>›</span>
+          <span style={{ color: theme.fg }}>{product.name}</span>
         </nav>
 
         {/* Layout — 2-col desktop / 1-col mobile */}
@@ -131,24 +132,24 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
           {/* Details */}
           <div>
-            <p style={{ color: "#C9A770", fontSize: "0.65rem", letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+            <p style={{ color: theme.accent, fontSize: "0.65rem", letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
               {product.categoryName ?? "Fashion"}
             </p>
-            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "1rem", color: "#F0F0F0" }}>
+            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "1rem", color: theme.fg }}>
               {product.name}
             </h1>
 
             {/* Price */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem", paddingBottom: "1.5rem", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-              <span style={{ color: "#C9A770", fontSize: "1.3rem", fontWeight: 600 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem", paddingBottom: "1.5rem", borderBottom: `1px solid ${theme.border}` }}>
+              <span style={{ color: theme.accent, fontSize: "1.3rem", fontWeight: 600 }}>
                 {formatPrice(effectivePrice)}
               </span>
               {hasDiscount && (
                 <>
-                  <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "1rem", textDecoration: "line-through" }}>
+                  <span style={{ color: theme.fgFaint, fontSize: "1rem", textDecoration: "line-through" }}>
                     {formatPrice(product.price)}
                   </span>
-                  <span style={{ background: "rgba(201,167,112,0.15)", color: "#C9A770", fontSize: "0.65rem", fontWeight: 600, padding: "0.2rem 0.6rem", letterSpacing: "0.1em" }}>
+                  <span style={{ background: "rgba(201,167,112,0.15)", color: theme.accent, fontSize: "0.65rem", fontWeight: 600, padding: "0.2rem 0.6rem", letterSpacing: "0.1em" }}>
                     SALE
                   </span>
                 </>
@@ -157,7 +158,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Description */}
             {product.description && (
-              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.9rem", lineHeight: 1.8, marginBottom: "2rem" }}>
+              <p style={{ color: theme.fgMuted, fontSize: "0.9rem", lineHeight: 1.8, marginBottom: "2rem" }}>
                 {product.description}
               </p>
             )}
@@ -165,8 +166,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             {/* Colors */}
             {product.colors && product.colors.length > 0 && (
               <div style={{ marginBottom: "1.5rem" }}>
-                <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
-                  Colour: <span style={{ color: "#fff" }}>{selectedColor ?? product.colors[0]}</span>
+                <p style={{ fontSize: "0.75rem", color: theme.fgMuted, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                  Colour: <span style={{ color: theme.fg }}>{selectedColor ?? product.colors[0]}</span>
                 </p>
                 <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                   {product.colors.map((color) => (
@@ -175,9 +176,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                       onClick={() => setSelectedColor(color)}
                       style={{
                         padding: "0.3rem 0.8rem",
-                        border: `1px solid ${selectedColor === color || (!selectedColor && color === product.colors![0]) ? "#C9A770" : "rgba(255,255,255,0.2)"}`,
+                        border: `1px solid ${selectedColor === color || (!selectedColor && color === product.colors![0]) ? theme.accent : theme.borderStrong}`,
                         background: "transparent",
-                        color: "rgba(255,255,255,0.7)",
+                        color: theme.fg,
                         fontSize: "0.75rem",
                         cursor: "pointer",
                         fontFamily: "'Inter', sans-serif",
@@ -194,7 +195,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             {/* Sizes */}
             {product.sizes && product.sizes.length > 0 && (
               <div style={{ marginBottom: "2rem" }}>
-                <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                <p style={{ fontSize: "0.75rem", color: theme.fgMuted, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
                   Size
                 </p>
                 <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
@@ -203,9 +204,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       style={{
-                        background: selectedSize === size ? "#C9A770" : "transparent",
-                        border: `1px solid ${selectedSize === size ? "#C9A770" : "rgba(255,255,255,0.2)"}`,
-                        color: selectedSize === size ? "#1C1C1E" : "rgba(255,255,255,0.6)",
+                        background: selectedSize === size ? theme.accent : "transparent",
+                        border: `1px solid ${selectedSize === size ? theme.accent : theme.borderStrong}`,
+                        color: selectedSize === size ? theme.onAccent : theme.fgMuted,
                         cursor: "pointer",
                         padding: "0.4rem 0.85rem",
                         fontSize: "0.8rem",
@@ -224,7 +225,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Stock */}
             {product.stockQty <= 5 && product.stockQty > 0 && (
-              <p style={{ color: "#C9A770", fontSize: "0.8rem", marginBottom: "1rem" }}>
+              <p style={{ color: theme.accent, fontSize: "0.8rem", marginBottom: "1rem" }}>
                 Only {product.stockQty} left in stock
               </p>
             )}
@@ -235,8 +236,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               disabled={addToCart.isPending || product.stockQty === 0}
               style={{
                 width: "100%",
-                background: addedToCart ? "#4ADE80" : "#C9A770",
-                color: "#1C1C1E",
+                background: addedToCart ? "#4ADE80" : theme.accent,
+                color: theme.onAccent,
                 fontWeight: 700,
                 fontSize: "0.85rem",
                 padding: "1rem",
@@ -262,12 +263,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               style={{
                 width: "100%",
                 background: "transparent",
-                color: isWishlisted ? "#C9A770" : "rgba(255,255,255,0.5)",
+                color: isWishlisted ? theme.accent : theme.fgMuted,
                 fontSize: "0.82rem",
                 padding: "0.8rem",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                border: `1px solid ${isWishlisted ? "#C9A770" : "rgba(255,255,255,0.14)"}`,
+                border: `1px solid ${isWishlisted ? theme.accent : theme.borderStrong}`,
                 cursor: "pointer",
                 transition: "all 0.2s",
                 display: "flex",
@@ -277,14 +278,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              <Heart size={16} fill={isWishlisted ? "#C9A770" : "none"} />
+              <Heart size={16} fill={isWishlisted ? theme.accent : "none"} />
               {isWishlisted ? "Saved to Wishlist" : "Save to Wishlist"}
             </button>
 
             {/* Accordion */}
-            <div style={{ marginTop: "2rem", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+            <div style={{ marginTop: "2rem", borderTop: `1px solid ${theme.border}` }}>
               {accordions.map(({ key, title, body }) => (
-                <div key={key} style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                <div key={key} style={{ borderBottom: `1px solid ${theme.border}` }}>
                   <button
                     onClick={() => toggleAcc(key)}
                     style={{
@@ -295,21 +296,21 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                       padding: "0.9rem 0",
                       background: "none",
                       border: "none",
-                      color: "rgba(255,255,255,0.7)",
+                      color: theme.fg,
                       fontSize: "0.85rem",
                       cursor: "pointer",
                       fontFamily: "'Inter', sans-serif",
                     }}
                   >
                     {title}
-                    <span style={{ color: "#C9A770", fontSize: "1.1rem", transition: "transform 0.3s", transform: openAccordion === key ? "rotate(45deg)" : "rotate(0)" }}>
+                    <span style={{ color: theme.accent, fontSize: "1.1rem", transition: "transform 0.3s", transform: openAccordion === key ? "rotate(45deg)" : "rotate(0)" }}>
                       +
                     </span>
                   </button>
                   <div
                     className={`acc-body ${openAccordion === key ? "open" : ""}`}
                   >
-                    <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.82rem", lineHeight: 1.75, paddingBottom: "1rem" }}>
+                    <p style={{ color: theme.fgMuted, fontSize: "0.82rem", lineHeight: 1.75, paddingBottom: "1rem" }}>
                       {body}
                     </p>
                   </div>
@@ -324,7 +325,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       {(similarLoading || (similarProducts && similarProducts.length > 0)) && (
         <section
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: `1px solid ${theme.border}`,
             padding: "4rem 1.5rem",
           }}
         >
@@ -332,7 +333,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <div style={{ marginBottom: "2.5rem" }}>
               <p
                 style={{
-                  color: "#C9A770",
+                  color: theme.accent,
                   fontSize: "0.65rem",
                   letterSpacing: "0.35em",
                   textTransform: "uppercase",
@@ -346,7 +347,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                   fontFamily: "'Playfair Display', serif",
                   fontSize: "clamp(1.5rem, 3vw, 2rem)",
                   fontWeight: 600,
-                  color: "#F0F0F0",
+                  color: theme.fg,
                 }}
               >
                 You May Also Like
@@ -364,7 +365,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
       {/* Hot Deals — featured ad strip */}
       {hotDeals.length > 0 && (
-        <section style={{ position: "relative", overflow: "hidden", background: "#0E0C09", padding: "5rem 0 4rem" }}>
+        <section style={{ position: "relative", overflow: "hidden", background: theme.surface, padding: "5rem 0 4rem", borderTop: `1px solid ${theme.border}` }}>
           {/* Gold aurora — bleeds from top centre */}
           <div
             style={{
@@ -408,7 +409,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               left: 0,
               right: 0,
               height: "3rem",
-              background: "linear-gradient(to bottom, transparent, rgba(28,28,30,0.4))",
+              background: "linear-gradient(to bottom, transparent, rgba(247,246,243,0.9))",
               pointerEvents: "none",
             }}
           />
@@ -424,7 +425,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     gap: "0.3rem",
                     background: "rgba(201,167,112,0.1)",
                     border: "1px solid rgba(201,167,112,0.35)",
-                    color: "#C9A770",
+                    color: theme.accent,
                     fontSize: "0.58rem",
                     fontWeight: 700,
                     letterSpacing: "0.22em",
@@ -456,7 +457,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                   fontFamily: "'Playfair Display', serif",
                   fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
                   fontWeight: 600,
-                  color: "#F0F0F0",
+                  color: theme.fg,
                   lineHeight: 1.15,
                   marginBottom: "0.85rem",
                 }}
@@ -493,10 +494,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                       style={{
                         position: "relative",
                         overflow: "hidden",
-                        background: "#242426",
+                        background: theme.imageBg,
                         aspectRatio: "3/4",
                         marginBottom: "0.6rem",
-                        border: "1px solid rgba(255,255,255,0.04)",
+                        border: `1px solid ${theme.borderSoft}`,
                       }}
                     >
                       {dealImg ? (
@@ -510,7 +511,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         />
                       ) : (
                         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.65rem" }}>No image</span>
+                          <span style={{ color: theme.fgFaint, fontSize: "0.65rem" }}>No image</span>
                         </div>
                       )}
 
@@ -520,8 +521,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             position: "absolute",
                             top: "0.5rem",
                             left: "0.5rem",
-                            background: "#C9A770",
-                            color: "#1C1C1E",
+                            background: theme.accent,
+                            color: theme.onAccent,
                             fontSize: "0.55rem",
                             fontWeight: 700,
                             padding: "0.15rem 0.4rem",
@@ -542,7 +543,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         fontFamily: "'Playfair Display', serif",
                         fontSize: "0.78rem",
                         fontWeight: 500,
-                        color: "#F0F0F0",
+                        color: theme.fg,
                         marginBottom: "0.25rem",
                         overflow: "hidden",
                         display: "-webkit-box",
@@ -554,11 +555,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                       {deal.name}
                     </p>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                      <span style={{ color: "#C9A770", fontSize: "0.78rem", fontWeight: 600 }}>
+                      <span style={{ color: theme.accent, fontSize: "0.78rem", fontWeight: 600 }}>
                         {formatPrice(dealPrice)}
                       </span>
                       {dealHasDiscount && (
-                        <span style={{ color: "rgba(255,255,255,0.28)", fontSize: "0.68rem", textDecoration: "line-through" }}>
+                        <span style={{ color: theme.fgFaint, fontSize: "0.68rem", textDecoration: "line-through" }}>
                           {formatPrice(deal.price)}
                         </span>
                       )}

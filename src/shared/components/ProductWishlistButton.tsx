@@ -5,10 +5,7 @@ import { Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/features/auth/store";
 import { useWishlist, useToggleWishlist } from "@/features/wishlist/queries";
-
-/** Theme accent — matches luxury fashion palette (price, CTAs, PDP wishlist). */
-const ACCENT_GOLD = "#C9A770";
-const HEART_IDLE = "rgba(255,255,255,0.58)";
+import { theme } from "@/shared/constants/theme";
 
 const baseBtnStyle: CSSProperties = {
   position: "absolute",
@@ -16,9 +13,9 @@ const baseBtnStyle: CSSProperties = {
   right: "0.6rem",
   zIndex: 10,
   borderRadius: "50%",
-  background: "rgba(28,28,30,0.75)",
-  backdropFilter: "blur(6px)",
-  border: "1px solid rgba(255,255,255,0.12)",
+  background: "rgba(255,255,255,0.92)",
+  backdropFilter: "blur(8px)",
+  border: `1px solid ${theme.borderStrong}`,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -102,8 +99,8 @@ export function ProductWishlistButton({
       <Heart
         size={icon}
         style={{
-          color: isInWishlist ? ACCENT_GOLD : HEART_IDLE,
-          fill: isInWishlist ? ACCENT_GOLD : "none",
+          color: isInWishlist ? theme.accent : theme.icon,
+          fill: isInWishlist ? theme.accent : "none",
           transition: "color 0.2s, fill 0.2s",
         }}
       />

@@ -10,6 +10,7 @@ import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { AppImage } from "@/shared/components/AppImage";
 import { APP_NAME } from "@/shared/constants/app";
+import { theme } from "@/shared/constants/theme";
 import { categoryListingHref } from "@/shared/lib/categoryRoutes";
 
 export default function HomePage() {
@@ -42,7 +43,7 @@ export default function HomePage() {
   }
 
   return (
-    <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+    <main style={{ background: theme.bg, minHeight: "100vh" }} className="animate-page-in">
 
       {/* Hero */}
       <section
@@ -58,11 +59,11 @@ export default function HomePage() {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(135deg, #0F0F10, #1C1C1E 55%, #2C2018)",
+            background: theme.heroBase,
           }}
         />
         {feed?.offers?.[0]?.imageUrl && (
-          <div style={{ position: "absolute", inset: 0, opacity: 0.35 }}>
+          <div style={{ position: "absolute", inset: 0, opacity: 0.5 }}>
             <AppImage
               src={feed.offers[0].imageUrl}
               alt="Hero"
@@ -77,7 +78,7 @@ export default function HomePage() {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to top, #1C1C1E, transparent 50%)",
+            background: theme.heroBottomFade,
           }}
         />
         <div
@@ -92,7 +93,7 @@ export default function HomePage() {
           <div style={{ maxWidth: "36rem" }}>
             <p
               style={{
-                color: "#C9A770",
+                color: theme.accent,
                 fontSize: "0.7rem",
                 letterSpacing: "0.4em",
                 textTransform: "uppercase",
@@ -108,15 +109,15 @@ export default function HomePage() {
                 fontWeight: 700,
                 lineHeight: 1.05,
                 marginBottom: "1.5rem",
-                color: "#F0F0F0",
+                color: theme.fg,
               }}
             >
               The Art of<br />
-              <em style={{ color: "#C9A770" }}>Quiet Luxury</em>
+              <em style={{ color: theme.accent }}>Quiet Luxury</em>
             </h1>
             <p
               style={{
-                color: "rgba(255,255,255,0.55)",
+                color: theme.fgMuted,
                 fontSize: "1.05rem",
                 lineHeight: 1.7,
                 marginBottom: "2rem",
@@ -130,8 +131,8 @@ export default function HomePage() {
               <Link
                 href="/categories"
                 style={{
-                  background: "#C9A770",
-                  color: "#1C1C1E",
+                  background: theme.accent,
+                  color: theme.onAccent,
                   fontWeight: 600,
                   fontSize: "0.75rem",
                   padding: "0.9rem 2rem",
@@ -146,8 +147,8 @@ export default function HomePage() {
               <Link
                 href="/new-arrivals"
                 style={{
-                  border: "1px solid rgba(255,255,255,0.25)",
-                  color: "rgba(255,255,255,0.8)",
+                  border: `1px solid ${theme.borderStrong}`,
+                  color: theme.fg,
                   fontSize: "0.75rem",
                   padding: "0.9rem 2rem",
                   letterSpacing: "0.15em",
@@ -168,7 +169,7 @@ export default function HomePage() {
         <section
           style={{
             padding: "4rem 1.5rem",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: `1px solid ${theme.border}`,
           }}
         >
           <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
@@ -183,7 +184,7 @@ export default function HomePage() {
               <div>
                 <p
                   style={{
-                    color: "#C9A770",
+                    color: theme.accent,
                     fontSize: "0.65rem",
                     letterSpacing: "0.35em",
                     textTransform: "uppercase",
@@ -197,7 +198,7 @@ export default function HomePage() {
                     fontFamily: "'Playfair Display', serif",
                     fontSize: "clamp(1.5rem, 3vw, 2rem)",
                     fontWeight: 600,
-                    color: "#F0F0F0",
+                    color: theme.fg,
                   }}
                 >
                   Explore the collection
@@ -206,7 +207,7 @@ export default function HomePage() {
               <Link
                 href="/categories"
                 style={{
-                  color: "rgba(255,255,255,0.35)",
+                  color: theme.fgSubtle,
                   fontSize: "0.75rem",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
@@ -248,7 +249,7 @@ export default function HomePage() {
                         className="product-img"
                       />
                     ) : (
-                      <div style={{ width: "100%", height: "100%", background: "#242426" }} />
+                      <div style={{ width: "100%", height: "100%", background: theme.imageBg }} />
                     )}
                   </div>
                   <div
@@ -275,7 +276,7 @@ export default function HomePage() {
                   >
                     <p
                       style={{
-                        color: "#C9A770",
+                        color: theme.accent,
                         fontSize: "0.65rem",
                         letterSpacing: "0.3em",
                         textTransform: "uppercase",
@@ -306,7 +307,7 @@ export default function HomePage() {
       <section
         style={{
           padding: "4rem 1.5rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
+          borderTop: `1px solid ${theme.border}`,
         }}
       >
         <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
@@ -321,7 +322,7 @@ export default function HomePage() {
             <div>
               <p
                 style={{
-                  color: "#C9A770",
+                  color: theme.accent,
                   fontSize: "0.65rem",
                   letterSpacing: "0.35em",
                   textTransform: "uppercase",
@@ -335,7 +336,7 @@ export default function HomePage() {
                   fontFamily: "'Playfair Display', serif",
                   fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
                   fontWeight: 600,
-                  color: "#F0F0F0",
+                  color: theme.fg,
                 }}
               >
                 New Arrivals
@@ -344,7 +345,7 @@ export default function HomePage() {
             <Link
               href="/new-arrivals"
               style={{
-                color: "rgba(255,255,255,0.35)",
+                color: theme.fgSubtle,
                 fontSize: "0.75rem",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
@@ -387,7 +388,7 @@ export default function HomePage() {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "linear-gradient(to right, rgba(28,28,30,0.88), rgba(28,28,30,0.4) 55%, transparent)",
+                  background: theme.offerOverlay,
                 }}
               />
               <div
@@ -401,7 +402,7 @@ export default function HomePage() {
               >
                 <p
                   style={{
-                    color: "#C9A770",
+                    color: theme.accent,
                     fontSize: "0.65rem",
                     letterSpacing: "0.35em",
                     textTransform: "uppercase",
@@ -417,7 +418,7 @@ export default function HomePage() {
                     fontWeight: 700,
                     lineHeight: 1.15,
                     marginBottom: "1rem",
-                    color: "#F0F0F0",
+                    color: theme.fg,
                   }}
                 >
                   {feed.offers[1].title}
@@ -425,7 +426,7 @@ export default function HomePage() {
                 {feed.offers[1].subtitle && (
                   <p
                     style={{
-                      color: "rgba(255,255,255,0.45)",
+                      color: theme.fgMuted,
                       fontSize: "0.85rem",
                       marginBottom: "1.5rem",
                       lineHeight: 1.7,
@@ -436,7 +437,7 @@ export default function HomePage() {
                 )}
                 <span
                   style={{
-                    color: "#C9A770",
+                    color: theme.accent,
                     fontSize: "0.75rem",
                     letterSpacing: "0.15em",
                     textTransform: "uppercase",
@@ -455,14 +456,14 @@ export default function HomePage() {
       <section
         style={{
           padding: "4rem 1.5rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
+          borderTop: `1px solid ${theme.border}`,
         }}
       >
         <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
           <div style={{ marginBottom: "3rem" }}>
             <p
               style={{
-                color: "#C9A770",
+                color: theme.accent,
                 fontSize: "0.65rem",
                 letterSpacing: "0.35em",
                 textTransform: "uppercase",
@@ -476,7 +477,7 @@ export default function HomePage() {
                 fontFamily: "'Playfair Display', serif",
                 fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
                 fontWeight: 600,
-                color: "#F0F0F0",
+                color: theme.fg,
               }}
             >
               Featured Pieces
@@ -495,7 +496,7 @@ export default function HomePage() {
         <section
           style={{
             padding: "4rem 1.5rem",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: `1px solid ${theme.border}`,
           }}
         >
           <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
@@ -511,7 +512,7 @@ export default function HomePage() {
               <div>
                 <p
                   style={{
-                    color: "#C9A770",
+                    color: theme.accent,
                     fontSize: "0.65rem",
                     letterSpacing: "0.35em",
                     textTransform: "uppercase",
@@ -525,7 +526,7 @@ export default function HomePage() {
                     fontFamily: "'Playfair Display', serif",
                     fontSize: "clamp(1.5rem, 3vw, 2rem)",
                     fontWeight: 600,
-                    color: "#F0F0F0",
+                    color: theme.fg,
                   }}
                 >
                   Shop by Category
@@ -534,7 +535,7 @@ export default function HomePage() {
               <Link
                 href="/categories"
                 style={{
-                  color: "rgba(255,255,255,0.35)",
+                  color: theme.fgSubtle,
                   fontSize: "0.75rem",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
@@ -560,7 +561,7 @@ export default function HomePage() {
                       width: "100%",
                       aspectRatio: "1 / 1",
                       overflow: "hidden",
-                      background: "#242426",
+                      background: theme.imageBg,
                       borderRadius: "0.15rem",
                     }}
                     className="cat-scroll-card"
@@ -582,10 +583,10 @@ export default function HomePage() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          background: "#242426",
+                          background: theme.imageBg,
                         }}
                       >
-                        <span style={{ fontSize: "1.5rem", fontWeight: 700, color: "rgba(255,255,255,0.15)", textTransform: "uppercase" }}>
+                        <span style={{ fontSize: "1.5rem", fontWeight: 700, color: theme.fgFaint, textTransform: "uppercase" }}>
                           {cat.name[0]}
                         </span>
                       </div>
@@ -633,9 +634,9 @@ export default function HomePage() {
                       width: "100%",
                       aspectRatio: "1 / 1",
                       overflow: "hidden",
-                      background: "#242426",
+                      background: theme.imageBg,
                       borderRadius: "0.15rem",
-                      border: "1px solid rgba(255,255,255,0.06)",
+                      border: `1px solid ${theme.border}`,
                       transition: "border-color 0.2s",
                     }}
                   >
@@ -658,7 +659,7 @@ export default function HomePage() {
                           justifyContent: "center",
                         }}
                       >
-                        <span style={{ fontSize: "2rem", fontWeight: 700, color: "rgba(255,255,255,0.15)", textTransform: "uppercase" }}>
+                        <span style={{ fontSize: "2rem", fontWeight: 700, color: theme.fgFaint, textTransform: "uppercase" }}>
                           {cat.name[0]}
                         </span>
                       </div>
@@ -699,7 +700,7 @@ export default function HomePage() {
         ref={allProductsSectionRef}
         style={{
           padding: "4rem 1.5rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
+          borderTop: `1px solid ${theme.border}`,
         }}
       >
         <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
@@ -717,7 +718,7 @@ export default function HomePage() {
             <div>
               <p
                 style={{
-                  color: "#C9A770",
+                  color: theme.accent,
                   fontSize: "0.65rem",
                   letterSpacing: "0.35em",
                   textTransform: "uppercase",
@@ -731,13 +732,13 @@ export default function HomePage() {
                   fontFamily: "'Playfair Display', serif",
                   fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
                   fontWeight: 600,
-                  color: "#F0F0F0",
+                  color: theme.fg,
                 }}
               >
                 All Products
               </h2>
               {totalItems > 0 && !allProductsLoading && (
-                <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.82rem", marginTop: "0.4rem" }}>
+                <p style={{ color: theme.fgFaint, fontSize: "0.82rem", marginTop: "0.4rem" }}>
                   {totalItems} piece{totalItems !== 1 ? "s" : ""}
                 </p>
               )}
@@ -749,9 +750,9 @@ export default function HomePage() {
                 value={sortBy}
                 onChange={(e) => handleSort(e.target.value)}
                 style={{
-                  background: "#2C2C2E",
-                  color: "rgba(255,255,255,0.7)",
-                  border: "1px solid rgba(255,255,255,0.12)",
+                  background: theme.surface,
+                  color: theme.fg,
+                  border: `1px solid ${theme.inputBorder}`,
                   padding: "0.5rem 0.9rem",
                   fontSize: "0.78rem",
                   fontFamily: "'Inter', sans-serif",
@@ -767,7 +768,7 @@ export default function HomePage() {
               <Link
                 href="/categories"
                 style={{
-                  color: "rgba(255,255,255,0.35)",
+                  color: theme.fgSubtle,
                   fontSize: "0.75rem",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
@@ -810,13 +811,13 @@ export default function HomePage() {
       {/* <section
         style={{
           padding: "4rem 1.5rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
+          borderTop: `1px solid ${theme.border}`,
         }}
       >
         <div style={{ maxWidth: "38rem", margin: "0 auto", textAlign: "center" }}>
           <p
             style={{
-              color: "#C9A770",
+              color: theme.accent,
               fontSize: "0.65rem",
               letterSpacing: "0.4em",
               textTransform: "uppercase",
@@ -831,14 +832,14 @@ export default function HomePage() {
               fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
               fontWeight: 600,
               marginBottom: "1rem",
-              color: "#F0F0F0",
+              color: theme.fg,
             }}
           >
             Be the First to Know
           </h2>
           <p
             style={{
-              color: "rgba(255,255,255,0.35)",
+              color: theme.fgSubtle,
               fontSize: "0.9rem",
               marginBottom: "2rem",
               lineHeight: 1.7,

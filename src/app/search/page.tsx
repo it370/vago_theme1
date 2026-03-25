@@ -9,6 +9,8 @@ import type { ViewMode } from "@/shared/components/ListingToolbar";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { Search } from "lucide-react";
+import { theme } from "@/shared/constants/theme";
+import { listingMainStyle, sectionEyebrowStyle, pageHeadingStyle } from "@/shared/lib/listingChrome";
 
 function SearchContent() {
   const sp = useSearchParams();
@@ -44,29 +46,15 @@ function SearchContent() {
   }, [initialQ]);
 
   return (
-    <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+    <main style={listingMainStyle} className="animate-page-in">
       <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 8rem" }}>
         {/* Search bar */}
         <form onSubmit={handleSubmit} style={{ marginBottom: "3rem" }}>
-          <p
-            style={{
-              color: "#C9A770",
-              fontSize: "0.65rem",
-              letterSpacing: "0.35em",
-              textTransform: "uppercase",
-              marginBottom: "0.75rem",
-            }}
-          >
+          <p style={{ ...sectionEyebrowStyle, marginBottom: "0.75rem" }}>
             Search
           </p>
           <h1
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-              fontWeight: 600,
-              marginBottom: "2rem",
-              color: "#F0F0F0",
-            }}
+            style={{ ...pageHeadingStyle, marginBottom: "2rem" }}
           >
             Find Your Piece
           </h1>
@@ -79,7 +67,7 @@ function SearchContent() {
                   left: "0.9rem",
                   top: "50%",
                   transform: "translateY(-50%)",
-                  color: "rgba(255,255,255,0.4)",
+                  color: theme.fgMuted,
                 }}
               />
               <input
@@ -89,9 +77,9 @@ function SearchContent() {
                 placeholder="Search products…"
                 style={{
                   width: "100%",
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  color: "#fff",
+                  background: theme.inputBg,
+                  border: `1px solid ${theme.inputBorder}`,
+                  color: theme.fg,
                   padding: "0.75rem 1rem 0.75rem 2.5rem",
                   fontSize: "0.9rem",
                   outline: "none",
@@ -102,8 +90,8 @@ function SearchContent() {
             <button
               type="submit"
               style={{
-                background: "#C9A770",
-                color: "#1C1C1E",
+                background: theme.accent,
+                color: theme.onAccent,
                 fontWeight: 600,
                 fontSize: "0.75rem",
                 padding: "0 1.5rem",

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, MessageSquare, Tag, Package } from "lucide-react";
 import type { CheckoutNotes } from "@/features/checkout/queries";
+import { theme } from "@/shared/constants/theme";
 
 interface SellerNotesPanelProps {
   notes: CheckoutNotes;
@@ -29,10 +30,10 @@ function NoteRow({
     >
       <span style={{ color: "#C9A770", marginTop: "0.1rem", flexShrink: 0 }}>{icon}</span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: "0.7rem", fontWeight: 600, color: "rgba(255,255,255,0.5)", marginBottom: "0.2rem" }}>
+        <p style={{ fontSize: "0.7rem", fontWeight: 600, color: theme.fgMuted, marginBottom: "0.2rem" }}>
           {label}
         </p>
-        <p style={{ fontSize: "0.78rem", color: "#F0F0F0", lineHeight: 1.6 }}>{note}</p>
+        <p style={{ fontSize: "0.78rem", color: theme.fg, lineHeight: 1.6 }}>{note}</p>
       </div>
     </div>
   );
@@ -103,7 +104,7 @@ export function SellerNotesPanel({ notes }: SellerNotesPanelProps) {
       </button>
 
       {!open && (
-        <p style={{ padding: "0 1rem 0.75rem", fontSize: "0.72rem", color: "rgba(255,255,255,0.4)", marginTop: "-0.25rem" }}>
+        <p style={{ padding: "0 1rem 0.75rem", fontSize: "0.72rem", color: theme.fgMuted, marginTop: "-0.25rem" }}>
           Tap to read important notes before placing your order
         </p>
       )}
@@ -136,8 +137,8 @@ export function SellerNotesPanelSkeleton() {
       style={{
         height: "3rem",
         borderRadius: "0.25rem",
-        border: "1px solid rgba(255,255,255,0.08)",
-        background: "#242426",
+        border: `1px solid ${theme.border}`,
+        background: theme.elevated,
         animation: "pulse 1.5s ease infinite",
       }}
     />

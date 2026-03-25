@@ -5,6 +5,7 @@ import type { Product } from "@/shared/types";
 import { formatPrice } from "@/features/products/normalize";
 import { AppImage } from "./AppImage";
 import { ProductWishlistButton } from "./ProductWishlistButton";
+import { theme } from "@/shared/constants/theme";
 
 interface ProductCardProps {
   product: Product;
@@ -26,7 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
         style={{
           position: "relative",
           overflow: "hidden",
-          background: "#242426",
+          background: theme.imageBg,
           aspectRatio: "3/4",
           marginBottom: "0.75rem",
         }}
@@ -45,13 +46,13 @@ export function ProductCard({ product }: ProductCardProps) {
             style={{
               position: "absolute",
               inset: 0,
-              background: "#242426",
+              background: theme.imageBg,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.75rem" }}>
+            <span style={{ color: theme.fgFaint, fontSize: "0.75rem" }}>
               No image
             </span>
           </div>
@@ -64,8 +65,8 @@ export function ProductCard({ product }: ProductCardProps) {
               position: "absolute",
               top: "0.75rem",
               left: "0.75rem",
-              background: "#C9A770",
-              color: "#1C1C1E",
+              background: theme.accent,
+              color: theme.onAccent,
               fontSize: "0.6rem",
               fontWeight: 700,
               padding: "0.2rem 0.5rem",
@@ -85,7 +86,7 @@ export function ProductCard({ product }: ProductCardProps) {
           style={{
             position: "absolute",
             inset: 0,
-            background: "rgba(0,0,0,0.35)",
+            background: theme.cardHoverScrim,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -94,10 +95,10 @@ export function ProductCard({ product }: ProductCardProps) {
         >
           <span
             style={{
-              background: "rgba(255,255,255,0.1)",
-              backdropFilter: "blur(8px)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              color: "#fff",
+              background: theme.cardHoverBarBg,
+              backdropFilter: "blur(10px)",
+              border: `1px solid ${theme.cardHoverBarBorder}`,
+              color: theme.fg,
               fontSize: "0.7rem",
               padding: "0.5rem 1.25rem",
               letterSpacing: "0.1em",
@@ -113,7 +114,7 @@ export function ProductCard({ product }: ProductCardProps) {
       {product.categoryName && (
         <p
           style={{
-            color: "rgba(255,255,255,0.45)",
+            color: theme.fgSubtle,
             fontSize: "0.65rem",
             letterSpacing: "0.2em",
             textTransform: "uppercase",
@@ -142,13 +143,13 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Price */}
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <span style={{ color: "#C9A770", fontSize: "0.85rem", fontWeight: 600 }}>
+        <span style={{ color: theme.accent, fontSize: "0.85rem", fontWeight: 600 }}>
           {formatPrice(effectivePrice)}
         </span>
         {hasDiscount && (
           <span
             style={{
-              color: "rgba(255,255,255,0.3)",
+              color: theme.fgFaint,
               fontSize: "0.75rem",
               textDecoration: "line-through",
             }}

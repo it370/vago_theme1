@@ -6,6 +6,7 @@ import { signInWithGoogle } from "@/lib/firebase";
 import { ApiService } from "@/shared/services/api";
 import { useAuthStore } from "@/features/auth/store";
 import { APP_NAME, APP_TAGLINE } from "@/shared/constants/app";
+import { theme } from "@/shared/constants/theme";
 
 function LoginContent() {
   const router = useRouter();
@@ -41,7 +42,7 @@ function LoginContent() {
   return (
     <main
       style={{
-        background: "#1C1C1E",
+        background: theme.bg,
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
@@ -56,7 +57,7 @@ function LoginContent() {
             fontFamily: "'Playfair Display', serif",
             fontSize: "2rem",
             letterSpacing: "0.35em",
-            color: "#C9A770",
+            color: theme.accent,
             fontWeight: 700,
             marginBottom: "0.5rem",
           }}
@@ -65,7 +66,7 @@ function LoginContent() {
         </p>
         <p
           style={{
-            color: "rgba(255,255,255,0.3)",
+            color: theme.fgMuted,
             fontSize: "0.8rem",
             letterSpacing: "0.1em",
             marginBottom: "3rem",
@@ -77,8 +78,9 @@ function LoginContent() {
         {/* Card */}
         <div
           style={{
-            background: "#242426",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: theme.surface,
+            border: `1px solid ${theme.border}`,
+            boxShadow: "0 1px 3px rgba(20,20,19,0.06)",
             padding: "2.5rem 2rem",
           }}
         >
@@ -88,14 +90,14 @@ function LoginContent() {
               fontSize: "1.4rem",
               fontWeight: 600,
               marginBottom: "0.5rem",
-              color: "#F0F0F0",
+              color: theme.fg,
             }}
           >
             Welcome Back
           </h1>
           <p
             style={{
-              color: "rgba(255,255,255,0.35)",
+              color: theme.fgMuted,
               fontSize: "0.85rem",
               marginBottom: "2rem",
               lineHeight: 1.6,
@@ -109,12 +111,12 @@ function LoginContent() {
             disabled={loading}
             style={{
               width: "100%",
-              background: "#fff",
-              color: "#1C1C1E",
+              background: theme.surface,
+              color: theme.fg,
               fontWeight: 600,
               fontSize: "0.85rem",
               padding: "0.9rem 1.5rem",
-              border: "none",
+              border: `1px solid ${theme.borderStrong}`,
               cursor: loading ? "not-allowed" : "pointer",
               display: "flex",
               alignItems: "center",
@@ -139,7 +141,7 @@ function LoginContent() {
           <p
             style={{
               marginTop: "1.5rem",
-              color: "rgba(255,255,255,0.2)",
+              color: theme.fgFaint,
               fontSize: "0.75rem",
               lineHeight: 1.6,
             }}

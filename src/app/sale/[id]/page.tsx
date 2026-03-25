@@ -8,6 +8,15 @@ import { ListingToolbar } from "@/shared/components/ListingToolbar";
 import type { ViewMode } from "@/shared/components/ListingToolbar";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
+import { theme } from "@/shared/constants/theme";
+import {
+  listingMainStyle,
+  crumbLinkStyle,
+  crumbSepStyle,
+  crumbCurrentStyle,
+  sectionEyebrowStyle,
+  pageHeadingStyle,
+} from "@/shared/lib/listingChrome";
 
 export default function OfferDetailPage({
   params,
@@ -33,7 +42,7 @@ export default function OfferDetailPage({
   const offer = offers?.find((o) => o.id === id);
 
   return (
-    <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+    <main style={listingMainStyle} className="animate-page-in">
       <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 8rem" }}>
         {/* Breadcrumb */}
         <nav
@@ -46,45 +55,31 @@ export default function OfferDetailPage({
             flexWrap: "wrap",
           }}
         >
-          <Link href="/home" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
+          <Link href="/home" style={crumbLinkStyle}>
             Home
           </Link>
-          <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-          <Link href="/sale" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
+          <span style={crumbSepStyle}>›</span>
+          <Link href="/sale" style={crumbLinkStyle}>
             Sale & Offers
           </Link>
-          <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-          <span style={{ color: "rgba(255,255,255,0.75)" }}>
+          <span style={crumbSepStyle}>›</span>
+          <span style={crumbCurrentStyle}>
             {offer?.title ?? "Offer"}
           </span>
         </nav>
 
         {/* Heading */}
         <div style={{ marginBottom: "2rem" }}>
-          <p
-            style={{
-              color: "#C9A770",
-              fontSize: "0.65rem",
-              letterSpacing: "0.35em",
-              textTransform: "uppercase",
-              marginBottom: "0.5rem",
-            }}
-          >
+          <p style={sectionEyebrowStyle}>
             Exclusive Offer
           </p>
           <h1
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-              fontWeight: 600,
-              color: "#F0F0F0",
-              marginBottom: "0.4rem",
-            }}
+            style={{ ...pageHeadingStyle, marginBottom: "0.4rem" }}
           >
             {offer?.title ?? "Loading…"}
           </h1>
           {offer?.subtitle && (
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.88rem", lineHeight: 1.6 }}>
+            <p style={{ color: theme.fgMuted, fontSize: "0.88rem", lineHeight: 1.6 }}>
               {offer.subtitle}
             </p>
           )}

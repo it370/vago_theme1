@@ -1,4 +1,5 @@
 import { clsx } from "clsx";
+import { theme } from "@/shared/constants/theme";
 
 interface ShimmerProps {
   className?: string;
@@ -9,7 +10,7 @@ export function Shimmer({ className, style }: ShimmerProps) {
   return (
     <div
       className={clsx("animate-pulse", className)}
-      style={{ background: "rgba(255,255,255,0.06)", ...style }}
+      style={{ background: theme.shimmer, ...style }}
     />
   );
 }

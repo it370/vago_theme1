@@ -5,13 +5,22 @@ import { useOffers } from "@/features/offers/queries";
 import { Footer } from "@/shared/components/Footer";
 import { BottomNav } from "@/shared/components/BottomNav";
 import { AppImage } from "@/shared/components/AppImage";
+import { theme } from "@/shared/constants/theme";
+import {
+  listingMainStyle,
+  crumbLinkStyle,
+  crumbSepStyle,
+  crumbCurrentStyle,
+  sectionEyebrowStyle,
+  pageHeadingStyle,
+} from "@/shared/lib/listingChrome";
 
 export default function SalePage() {
   const { data: offers, isLoading } = useOffers();
   const activeOffers = offers?.filter((o) => o.isActive) ?? [];
 
   return (
-    <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+    <main style={listingMainStyle} className="animate-page-in">
       <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1.5rem 8rem" }}>
         {/* Breadcrumb */}
         <nav
@@ -23,40 +32,27 @@ export default function SalePage() {
             fontSize: "0.8rem",
           }}
         >
-          <Link href="/home" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
+          <Link href="/home" style={crumbLinkStyle}>
             Home
           </Link>
-          <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-          <span style={{ color: "rgba(255,255,255,0.75)" }}>Sale & Offers</span>
+          <span style={crumbSepStyle}>›</span>
+          <span style={crumbCurrentStyle}>Sale & Offers</span>
         </nav>
 
         {/* Header */}
         <div style={{ marginBottom: "2.5rem" }}>
-          <p
-            style={{
-              color: "#C9A770",
-              fontSize: "0.65rem",
-              letterSpacing: "0.35em",
-              textTransform: "uppercase",
-              marginBottom: "0.5rem",
-            }}
-          >
+          <p style={sectionEyebrowStyle}>
             Exclusive Offers
           </p>
           <h1
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-              fontWeight: 600,
-              color: "#F0F0F0",
-            }}
+            style={pageHeadingStyle}
           >
             Sale & Offers
           </h1>
         </div>
 
         {/* Divider */}
-        <div style={{ marginBottom: "2.5rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }} />
+        <div style={{ marginBottom: "2.5rem", borderBottom: `1px solid ${theme.border}` }} />
 
         {/* Offer cards */}
         {isLoading ? (
@@ -72,7 +68,7 @@ export default function SalePage() {
                 key={i}
                 style={{
                   height: "10rem",
-                  background: "#242426",
+                  background: theme.skeleton,
                   borderRadius: "0.25rem",
                   animation: "pulse 1.5s ease infinite",
                 }}
@@ -85,20 +81,20 @@ export default function SalePage() {
               style={{
                 fontFamily: "'Playfair Display', serif",
                 fontSize: "1.1rem",
-                color: "#F0F0F0",
+                color: theme.fg,
                 marginBottom: "0.5rem",
               }}
             >
               No active offers right now
             </p>
-            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.85rem", marginBottom: "2rem" }}>
+            <p style={{ color: theme.fgSubtle, fontSize: "0.85rem", marginBottom: "2rem" }}>
               Check back soon for exclusive deals.
             </p>
             <Link
               href="/categories"
               style={{
-                background: "#C9A770",
-                color: "#1C1C1E",
+                background: theme.accent,
+                color: theme.onAccent,
                 fontWeight: 600,
                 fontSize: "0.75rem",
                 padding: "0.9rem 2rem",
@@ -146,8 +142,7 @@ export default function SalePage() {
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background:
-                      "linear-gradient(to right, rgba(28,28,30,0.85), rgba(28,28,30,0.35) 60%, transparent)",
+                    background: theme.offerOverlay,
                   }}
                 />
                 <div
@@ -160,7 +155,7 @@ export default function SalePage() {
                 >
                   <p
                     style={{
-                      color: "#C9A770",
+                      color: theme.accent,
                       fontSize: "0.6rem",
                       letterSpacing: "0.3em",
                       textTransform: "uppercase",
@@ -173,7 +168,7 @@ export default function SalePage() {
                     style={{
                       fontFamily: "'Playfair Display', serif",
                       fontSize: "1.2rem",
-                      color: "#fff",
+                      color: theme.fg,
                       fontWeight: 600,
                       marginBottom: "0.2rem",
                     }}
@@ -183,7 +178,7 @@ export default function SalePage() {
                   {offer.subtitle && (
                     <p
                       style={{
-                        color: "rgba(255,255,255,0.5)",
+                        color: theme.fgMuted,
                         fontSize: "0.78rem",
                         lineHeight: 1.5,
                       }}
@@ -195,7 +190,7 @@ export default function SalePage() {
                     style={{
                       display: "inline-block",
                       marginTop: "0.75rem",
-                      color: "#C9A770",
+                      color: theme.accent,
                       fontSize: "0.68rem",
                       letterSpacing: "0.12em",
                       textTransform: "uppercase",

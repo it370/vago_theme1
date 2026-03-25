@@ -4,19 +4,20 @@
   --color-gold: #C9A770;
   --color-gold-light: #DFC090;
   --color-gold-dark: #A07840;
-  --color-surface: #242426;
-  --color-elevated: #2C2C2E;
-  --color-variant: #3A3A3C;
+  --color-surface: #ffffff;
+  --color-elevated: #f0eee9;
+  --color-variant: #e4e1da;
   --font-display: "Playfair Display", serif;
   --font-body: "Inter", sans-serif;
 }
 
 :root {
-  --background: #1C1C1E;
-  --foreground: #F0F0F0;
-  --accent: #C9A770;
-  --surface: #242426;
-  --elevated: #2C2C2E;
+  --background: #f7f6f3;
+  --foreground: #141413;
+  --accent: #c9a770;
+  --surface: #ffffff;
+  --elevated: #f0eee9;
+  --border-ui: rgba(20, 20, 19, 0.08);
 }
 
 * {
@@ -48,7 +49,7 @@ body.vago-revealed {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #1C1C1E; }
+::-webkit-scrollbar-track { background: #ebe8e3; }
 ::-webkit-scrollbar-thumb { background: #C9A770; border-radius: 2px; }
 
 /* Per-page route-change animation (matches template's pgIn) */
@@ -188,7 +189,7 @@ body.vago-revealed {
 
 /* Hover accent border on desktop grid items */
 .cat-grid-item:hover > div {
-  border-color: rgba(201,167,112,0.5) !important;
+  border-color: rgba(201, 167, 112, 0.55) !important;
 }
 
 /* ===== MOBILE BREAKPOINT (< 769px) ===== */
@@ -275,7 +276,7 @@ body.vago-revealed {
   justify-content: space-between;
   margin-bottom: 1.5rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--border-ui);
 }
 
 .listing-toolbar__pills-wrap {
@@ -299,15 +300,15 @@ body.vago-revealed {
   align-items: stretch;
   gap: 1.25rem;
   padding: 1rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--border-ui);
   transition: background 0.15s;
   cursor: pointer;
 }
 .product-row-card:first-child {
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--border-ui);
 }
 .product-row-card:hover {
-  background: rgba(255,255,255,0.02);
+  background: rgba(20, 20, 19, 0.03);
 }
 
 @media (min-width: 640px) {

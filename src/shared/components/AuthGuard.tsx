@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/features/auth/store";
+import { theme } from "@/shared/constants/theme";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -21,8 +22,8 @@ export function AuthGuard({ children, redirectTo = "/login" }: AuthGuardProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#1C1C1E" }}>
-        <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" style={{ borderColor: "#C9A770", borderTopColor: "transparent" }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: theme.bg }}>
+        <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" style={{ borderColor: theme.accent, borderTopColor: "transparent" }} />
       </div>
     );
   }

@@ -3,6 +3,7 @@ import type { ViewMode } from "./ListingToolbar";
 import { ProductCard } from "./ProductCard";
 import { ProductRowCard } from "./ProductRowCard";
 import { ProductGridSkeleton } from "./Shimmer";
+import { theme } from "@/shared/constants/theme";
 
 interface ProductGridProps {
   products?: Product[];
@@ -29,7 +30,7 @@ export function ProductGrid({
         style={{
           textAlign: "center",
           padding: "5rem 0",
-          color: "rgba(255,255,255,0.3)",
+          color: theme.fgSubtle,
         }}
       >
         <svg

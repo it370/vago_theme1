@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AppImage } from "./AppImage";
+import { theme } from "@/shared/constants/theme";
 
 interface ImageGalleryProps {
   images: string[];
@@ -19,7 +20,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
         style={{
           position: "relative",
           aspectRatio: "3/4",
-          background: "#242426",
+          background: theme.imageBg,
           marginBottom: "0.75rem",
           overflow: "hidden",
         }}
@@ -50,8 +51,8 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
               style={{
                 aspectRatio: "3/4",
                 position: "relative",
-                border: `2px solid ${i === activeIndex ? "#C9A770" : "transparent"}`,
-                background: "#242426",
+                border: `2px solid ${i === activeIndex ? theme.accent : "transparent"}`,
+                background: theme.imageBg,
                 cursor: "pointer",
                 padding: 0,
                 overflow: "hidden",

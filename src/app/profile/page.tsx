@@ -14,6 +14,7 @@ import { StatusBadge } from "@/shared/components/StatusBadge";
 import { formatPrice } from "@/features/products/normalize";
 import { Package, Heart, ShoppingBag, LogOut, ChevronRight } from "lucide-react";
 import { AppImage } from "@/shared/components/AppImage";
+import { theme } from "@/shared/constants/theme";
 
 function ProfileContent() {
   const { user } = useAuthStore();
@@ -37,8 +38,9 @@ function ProfileContent() {
           gap: "1.25rem",
           marginBottom: "3rem",
           padding: "1.75rem",
-          background: "#242426",
-          border: "1px solid rgba(255,255,255,0.06)",
+          background: theme.surface,
+          border: `1px solid ${theme.border}`,
+          boxShadow: "0 1px 2px rgba(20,20,19,0.04)",
         }}
       >
         {user?.photoURL ? (
@@ -58,16 +60,16 @@ function ProfileContent() {
               flexShrink: 0,
             }}
           >
-            <span style={{ color: "#C9A770", fontSize: "1.4rem", fontFamily: "'Playfair Display', serif" }}>
+            <span style={{ color: theme.accent, fontSize: "1.4rem", fontFamily: "'Playfair Display', serif" }}>
               {(user?.displayName ?? user?.email ?? "U")[0].toUpperCase()}
             </span>
           </div>
         )}
         <div>
-          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 600, color: "#F0F0F0", marginBottom: "0.2rem" }}>
+          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 600, color: theme.fg, marginBottom: "0.2rem" }}>
             {user?.displayName ?? "Valued Customer"}
           </p>
-          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.82rem" }}>{user?.email}</p>
+          <p style={{ color: theme.fgMuted, fontSize: "0.82rem" }}>{user?.email}</p>
         </div>
       </div>
 
@@ -82,10 +84,10 @@ function ProfileContent() {
       {orders && orders.length > 0 && (
         <section style={{ marginBottom: "2rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase" }}>
+            <p style={{ color: theme.fgMuted, fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase" }}>
               Recent Orders
             </p>
-            <Link href="/orders" style={{ color: "#C9A770", fontSize: "0.75rem", textDecoration: "none" }}>
+            <Link href="/orders" style={{ color: theme.accent, fontSize: "0.75rem", textDecoration: "none" }}>
               View all →
             </Link>
           </div>
@@ -99,22 +101,22 @@ function ProfileContent() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   padding: "1rem 1.25rem",
-                  background: "#242426",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: theme.surface,
+                  border: `1px solid ${theme.border}`,
                   textDecoration: "none",
                 }}
               >
                 <div>
-                  <p style={{ color: "#F0F0F0", fontSize: "0.85rem", fontWeight: 500, marginBottom: "0.2rem" }}>
+                  <p style={{ color: theme.fg, fontSize: "0.85rem", fontWeight: 500, marginBottom: "0.2rem" }}>
                     #{order.orderNumber}
                   </p>
-                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.75rem" }}>
+                  <p style={{ color: theme.fgSubtle, fontSize: "0.75rem" }}>
                     {formatPrice(order.totalAmount)}
                   </p>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                   <StatusBadge status={order.status} />
-                  <ChevronRight size={14} style={{ color: "rgba(255,255,255,0.3)" }} />
+                  <ChevronRight size={14} style={{ color: theme.fgFaint }} />
                 </div>
               </Link>
             ))}
@@ -167,19 +169,19 @@ function StatCard({
         alignItems: "center",
         gap: "0.5rem",
         padding: "1.25rem",
-        background: "#242426",
-        border: "1px solid rgba(255,255,255,0.06)",
+        background: theme.surface,
+        border: `1px solid ${theme.border}`,
         textDecoration: "none",
         transition: "border-color 0.2s",
       }}
-      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "rgba(201,167,112,0.3)")}
-      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.06)")}
+      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "rgba(201,167,112,0.45)")}
+      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = theme.border)}
     >
-      <span style={{ color: "#C9A770" }}>{icon}</span>
-      <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.4rem", fontWeight: 600, color: "#F0F0F0" }}>
+      <span style={{ color: theme.accent }}>{icon}</span>
+      <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.4rem", fontWeight: 600, color: theme.fg }}>
         {value}
       </span>
-      <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+      <span style={{ color: theme.fgMuted, fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
         {label}
       </span>
     </Link>
@@ -189,7 +191,7 @@ function StatCard({
 export default function ProfilePage() {
   return (
     <AuthGuard>
-      <main style={{ background: "#1C1C1E", minHeight: "100vh" }} className="animate-page-in">
+      <main style={{ background: theme.bg, minHeight: "100vh" }} className="animate-page-in">
         <ProfileContent />
         <Footer />
         <div className="r-bottom-spacer" />
