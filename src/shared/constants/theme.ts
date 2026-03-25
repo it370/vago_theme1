@@ -100,11 +100,70 @@ export const darkTheme = {
   cardHoverBarBorder: "rgba(255,255,255,0.2)",
 } as const;
 
-/** Either palette; use for props or toggling. */
-export type ThemeTokens = typeof lightTheme | typeof darkTheme;
+/**
+ * Pure white theme — zero creaminess, clinical-fresh.
+ * Every surface is true white or a neutral cool-gray.
+ * Text uses near-black with no warm tint.
+ * Accent & footer charcoal unchanged.
+ */
+export const pureTheme = {
+  bg: "#FFFFFF",
+  surface: "#FAFAFA",
+  elevated: "#F4F4F4",
+  variant: "#EBEBEB",
+  imageBg: "#F4F4F4",
+
+  fg: "#0A0A0A",
+  fgMuted: "rgba(10,10,10,0.52)",
+  fgSubtle: "rgba(10,10,10,0.36)",
+  fgFaint: "rgba(10,10,10,0.2)",
+
+  border: "rgba(10,10,10,0.07)",
+  borderSoft: "rgba(10,10,10,0.04)",
+  borderStrong: "rgba(10,10,10,0.12)",
+
+  accent: "#C9A770",
+  onAccent: "#0A0A0A",
+
+  icon: "rgba(10,10,10,0.46)",
+  iconMuted: "rgba(10,10,10,0.38)",
+  navLink: "rgba(10,10,10,0.52)",
+
+  headerBg: "rgba(255,255,255,0.96)",
+  bottomNavBg: "rgba(255,255,255,0.98)",
+
+  inputBg: "#FFFFFF",
+  inputBorder: "rgba(10,10,10,0.1)",
+
+  skeleton: "#EDEDED",
+  skeletonInner: "#DCDCDC",
+
+  footerBg: "#1C1C1E",
+
+  heroBase:
+    "linear-gradient(135deg, #FFFFFF 0%, #F8F8F8 50%, #F0F0F0 100%)",
+  heroBottomFade:
+    "linear-gradient(to top, #FFFFFF, rgba(255,255,255,0.15) 55%, transparent)",
+
+  offerOverlay:
+    "linear-gradient(to right, rgba(255,255,255,0.96), rgba(250,250,250,0.55) 52%, transparent)",
+
+  shimmer: "rgba(10,10,10,0.05)",
+
+  cardHoverScrim: "rgba(10,10,10,0.1)",
+  cardHoverBarBg: "rgba(255,255,255,0.94)",
+  cardHoverBarBorder: "rgba(10,10,10,0.08)",
+} as const;
+
+/** Any of the three palettes. */
+export type ThemeTokens = typeof lightTheme | typeof darkTheme | typeof pureTheme;
 
 /**
  * Active palette for the app (`import { theme } from "…"`).
- * Set to `darkTheme` to restore the original dark UI everywhere that uses `theme`.
+ * Swap to `darkTheme` or `pureTheme` to change the whole UI.
+ *
+ * lightTheme — warm off-white editorial
+ * pureTheme  — pure white, clinical-fresh
+ * darkTheme  — original charcoal luxury
  */
-export const theme: ThemeTokens = darkTheme;
+export const theme: ThemeTokens = pureTheme;
