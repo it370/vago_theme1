@@ -43,8 +43,8 @@ body {
 
 body.vago-revealed {
   opacity: 1;
-  transform: translateY(0);
-  filter: blur(0);
+  transform: none;
+  filter: none;
 }
 
 /* Scrollbar */
@@ -335,6 +335,89 @@ body.vago-revealed {
 }
 .hot-deals-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* ===== CONVERSATION WIDGET ===== */
+
+/* Floating trigger button */
+.conv-widget-btn {
+  position: fixed;
+  /* Sits above the BottomNav on mobile */
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 14px);
+  right: 1.25rem;
+  z-index: 60;
+}
+
+/* Chat panel — mobile: full-width bottom sheet */
+.conv-widget-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 85dvh;
+  z-index: 59;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+  overscroll-behavior: contain;
+  /* Panel is fully isolated — touches / scroll never reach the page */
+  touch-action: none;
+  animation: conv-slide-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+/* Mobile backdrop */
+.conv-widget-backdrop {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  background: rgba(0, 0, 0, 0.35);
+  animation: conv-fade-in 0.2s ease both;
+}
+
+@keyframes conv-slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes conv-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Allow finger-scroll inside the messages list on touch devices */
+.conv-widget-panel > div[style] {
+  touch-action: pan-y;
+}
+
+/* Desktop ≥ 768px: compact floating panel, no backdrop */
+@media (min-width: 768px) {
+  .conv-widget-btn {
+    bottom: 1.75rem;
+  }
+
+  .conv-widget-panel {
+    left: auto;
+    right: 1.75rem;
+    bottom: 6rem; /* floats above the button */
+    width: 380px;
+    height: 520px;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.08);
+    touch-action: auto;   /* desktop: no restriction needed */
+    animation: conv-pop-in 0.25s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+
+  .conv-widget-backdrop {
+    display: none;
+  }
+}
+
+@keyframes conv-pop-in {
+  from { transform: scale(0.92) translateY(12px); opacity: 0; }
+  to   { transform: scale(1)    translateY(0);    opacity: 1; }
 }
 
 /* ===== SMALL MOBILE (< 480px) ===== */

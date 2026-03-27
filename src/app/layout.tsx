@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/shared/components/Providers";
 import { NavigationProgress } from "@/shared/components/NavigationProgress";
 import { DesktopHeader } from "@/shared/components/DesktopHeader";
+import { ChatWidget } from "@/features/chat/ChatWidget";
 import { APP_NAME, APP_TAGLINE } from "@/shared/constants/app";
 
 export const dynamic = "force-dynamic";
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <NavigationProgress />
           <DesktopHeader />
           {children}
+          <ChatWidget />
         </Providers>
       </body>
     </html>

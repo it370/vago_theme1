@@ -140,6 +140,41 @@ export interface WishlistResponse {
   products: Product[];
 }
 
+// ─── Conversation ────────────────────────────────────────────────────────────
+
+export interface ProductSnapshot {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+}
+
+export interface ConversationMessage {
+  id: string;
+  conversationId: string;
+  senderType: "user" | "admin";
+  body: string | null;
+  imageUrl: string | null;
+  productId: string | null;
+  productSnapshot: ProductSnapshot | null;
+  createdAt: string;
+}
+
+export interface Conversation {
+  id: string;
+  unreadByUser: number;
+  lastMessageAt: string;
+  messages: ConversationMessage[];
+}
+
+export interface SendMessageBody {
+  body?: string;
+  imageUrl?: string;
+  productId?: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export interface PlaceOrderBody {
   address: Address;
   items: {

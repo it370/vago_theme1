@@ -36,6 +36,7 @@ export function BottomNav() {
       {navItems.map(({ href, Icon, label }) => {
         const active = pathname === href || pathname.startsWith(href + "/");
         const isCart = href === "/cart";
+
         return (
           <Link
             key={href}
