@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { useProduct, useProducts } from "@/features/products/queries";
 import { useNewArrivals } from "@/features/home/queries";
@@ -29,6 +29,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [selectedPack, setSelectedPack] = useState<string | null>(null);
   const [addedToCart, setAddedToCart] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+
+  // Set default variant selections once the product loads.
+  // Keyed to product.id so it re-runs only when navigating to a different product.
+  useEffect(() => {
+    if (!product) return;
+    if (product.sizes?.length) setSelectedSize(product.sizes[0]);
+    if (product.colors?.length) setSelectedColor(product.colors[0]);
+    if (product.packOptions?.length) setSelectedPack(product.packOptions[0].label);
+  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addToCart = useAddToCart();
   const toggleWishlist = useToggleWishlist();
@@ -254,7 +263,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                       onClick={() => setSelectedColor(color)}
                       style={{
                         padding: "0.3rem 0.8rem",
-                        border: `1px solid ${selectedColor === color || (!selectedColor && color === product.colors![0]) ? theme.accent : theme.borderStrong}`,
+                        border: `1px solid ${selectedColor === color ? theme.accent : theme.borderStrong}`,
                         background: "transparent",
                         color: theme.fg,
                         fontSize: "0.75rem",
@@ -274,7 +283,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             {product.sizes && product.sizes.length > 0 && (
               <div style={{ marginBottom: "2rem" }}>
                 <p style={{ fontSize: "0.75rem", color: theme.fgMuted, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
-                  Size
+                  Size{selectedSize && <span style={{ color: theme.fg, textTransform: "none", letterSpacing: 0 }}>: {selectedSize}</span>}
                 </p>
                 <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                   {product.sizes.map((size) => (
