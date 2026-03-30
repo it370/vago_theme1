@@ -1,0 +1,24 @@
+---
+description: All UI color values must come from the theme object, never hardcoded
+globs: src/**/*.tsx
+alwaysApply: false
+---
+
+# Theme Token Enforcement
+
+The app has a theme configuration at `@/shared/constants/theme`. Every color, background, border, shadow, and surface value in a component must use a token from that object. Never write hardcoded color literals.
+
+```tsx
+// ❌ BAD
+background: "rgba(0,0,0,0.35)"
+border: "1px solid #C9A770"
+color: "white"
+
+// ✅ GOOD
+import { theme } from "@/shared/constants/theme";
+background: theme.cardHoverBarBg
+border: `1px solid ${theme.borderStrong}`
+color: theme.fg
+```
+
+Before adding any color value to a component, check what tokens are available in the theme file and use the closest match. If no token fits, ask whether a new token should be added to the theme rather than hardcoding.

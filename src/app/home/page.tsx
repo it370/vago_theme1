@@ -12,6 +12,7 @@ import { AppImage } from "@/shared/components/AppImage";
 import { APP_NAME } from "@/shared/constants/app";
 import { theme } from "@/shared/constants/theme";
 import { categoryListingHref } from "@/shared/lib/categoryRoutes";
+import { OffersCarousel } from "@/features/home/OffersCarousel";
 
 export default function HomePage() {
   const { data: feed, isLoading: feedLoading } = useFeed();
@@ -363,93 +364,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Offers banner */}
+      {/* Offers carousel */}
       {feed?.offers && feed.offers.length > 1 && (
-        <section style={{ padding: "0 1.5rem 4rem" }}>
-          <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
-            <Link
-              href={`/sale/${feed.offers[1].id}`}
-              style={{
-                position: "relative",
-                height: "clamp(320px, 45vh, 520px)",
-                overflow: "hidden",
-                display: "block",
-                textDecoration: "none",
-              }}
-            >
-              <AppImage
-                src={feed.offers[1].imageUrl}
-                alt={feed.offers[1].title}
-                fill
-                sizes="(max-width: 1152px) 100vw, 72rem"
-                objectFit="cover"
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: theme.offerOverlay,
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  padding: "0 3.5rem",
-                  maxWidth: "30rem",
-                }}
-              >
-                <p
-                  style={{
-                    color: theme.accent,
-                    fontSize: "0.65rem",
-                    letterSpacing: "0.35em",
-                    textTransform: "uppercase",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  The Edit
-                </p>
-                <h2
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: "clamp(1.75rem, 4vw, 2.75rem)",
-                    fontWeight: 700,
-                    lineHeight: 1.15,
-                    marginBottom: "1rem",
-                    color: theme.fg,
-                  }}
-                >
-                  {feed.offers[1].title}
-                </h2>
-                {feed.offers[1].subtitle && (
-                  <p
-                    style={{
-                      color: theme.fgMuted,
-                      fontSize: "0.85rem",
-                      marginBottom: "1.5rem",
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {feed.offers[1].subtitle}
-                  </p>
-                )}
-                <span
-                  style={{
-                    color: theme.accent,
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                    fontWeight: 500,
-                  }}
-                >
-                  Browse the Edit →
-                </span>
-              </div>
-            </Link>
-          </div>
-        </section>
+        <OffersCarousel offers={feed.offers.slice(1)} />
       )}
 
       {/* Featured products */}
