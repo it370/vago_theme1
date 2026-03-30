@@ -131,9 +131,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   }
 
   const accordions = [
-    { key: "details", title: "Product Details", body: [product.material && `Material: ${product.material}`, product.weight && `Weight: ${product.weight}`, product.pattern && `Pattern: ${product.pattern}`].filter(Boolean).join(". ") || "Premium quality materials. See label for composition details." },
-    { key: "care", title: "Care Instructions", body: "Hand wash cold in mild detergent. Do not bleach. Do not tumble dry. Dry flat. Cool iron if needed." },
-    { key: "delivery", title: "Delivery & Returns", body: "Standard delivery 3–5 working days. Express available. Free returns within 30 days on all unworn, tagged items." },
+    // { key: "details", title: "Product Details", body: [product.material && `Material: ${product.material}`, product.weight && `Weight: ${product.weight}`, product.pattern && `Pattern: ${product.pattern}`].filter(Boolean).join(". ") || "Premium quality materials. See label for composition details." },
+    // { key: "care", title: "Care Instructions", body: "Hand wash cold in mild detergent. Do not bleach. Do not tumble dry. Dry flat. Cool iron if needed." },
+    { key: "delivery", title: "Delivery & Returns", body: "Our full collection is available for in-store purchase at our Muolhoi location. For customers outside the area, we provide reliable postal shipping services. Please note that all sales are final and non-refundable." },
   ];
 
   return (
