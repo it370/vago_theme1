@@ -50,25 +50,22 @@ export function ChatWidget() {
   }, []);
 
   if (!authReady) return null;
-
-  if (isLoggedIn) {
-    return (
-      <SinlungChatWidget
-        chatServerUrl={CHAT_SERVER_URL}
-        authMode="authenticated"
-        getToken={getChatToken}
-        theme={THEME}
-        header={HEADER}
-      />
-    );
-  }
+  const authMode = isLoggedIn ? "authenticated" : "guest";
 
   return (
     <SinlungChatWidget
       chatServerUrl={CHAT_SERVER_URL}
-      authMode="guest"
-      publishableKey={CHAT_PUBLISHABLE_KEY}
-      guestForm={{ fields: ["name", "phone"] }}
+      authMode={authMode}
+      {...(isLoggedIn
+        ? {
+            getToken: getChatToken,
+            // Ask user whether to carry over guest conversation on login.
+            promptOnAuthUpgrade: true,
+          }
+        : {
+            publishableKey: CHAT_PUBLISHABLE_KEY,
+            guestForm: { fields: ["name", "phone"] as const },
+          })}
       theme={THEME}
       header={HEADER}
     />
