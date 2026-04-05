@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@sinlungtech/chat-widget": "^0.1.7",
+    "@sinlungtech/push-client": "^0.1.3",
     "@tanstack/react-query": "^5.95.2",
     "clsx": "^2.1.1",
     "firebase": "^12.11.0",
