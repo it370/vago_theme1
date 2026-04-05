@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ChatWidget as SinlungChatWidget } from "@sinlungtech/chat-widget";
+import { useRouter } from "next/navigation";
 
 const CHAT_SERVER_URL = process.env.NEXT_PUBLIC_CHAT_SERVER_URL ?? "";
-const CHAT_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CHAT_PUBLISHABLE_KEY ?? "";
 
 const THEME = {
   primaryColor: "#C9A770",
@@ -40,6 +40,8 @@ export function ChatWidget() {
   // The actual token fetching is delegated to the widget via `getToken`.
   const [authReady, setAuthReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(getAuth(), (user) => {
@@ -49,23 +51,34 @@ export function ChatWidget() {
     return () => unsub();
   }, []);
 
+  // If the user logs out while chat is open, close it.
+  useEffect(() => {
+    if (!isLoggedIn && isChatOpen) {
+      setIsChatOpen(false);
+    }
+  }, [isLoggedIn, isChatOpen]);
+
   if (!authReady) return null;
-  const authMode = isLoggedIn ? "authenticated" : "guest";
+  const authMode = "authenticated";
 
   return (
     <SinlungChatWidget
       chatServerUrl={CHAT_SERVER_URL}
       authMode={authMode}
-      {...(isLoggedIn
-        ? {
-            getToken: getChatToken,
-            // Ask user whether to carry over guest conversation on login.
-            promptOnAuthUpgrade: true,
-          }
-        : {
-            publishableKey: CHAT_PUBLISHABLE_KEY,
-            guestForm: { fields: ["name", "phone"] as const },
-          })}
+      getToken={getChatToken}
+      isOpen={isChatOpen}
+      onOpen={() => {
+        if (!isLoggedIn) {
+          const next =
+            typeof window !== "undefined"
+              ? `${window.location.pathname}${window.location.search}`
+              : "/";
+          router.push(`/login?next=${encodeURIComponent(next)}`);
+          return;
+        }
+        setIsChatOpen(true);
+      }}
+      onClose={() => setIsChatOpen(false)}
       theme={THEME}
       header={HEADER}
     />
